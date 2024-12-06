@@ -1,0 +1,259 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{wrapfig}
+\usepackage{array}
+\usepackage{color} 
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[font=small,labelfont=bf]{caption}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\usepackage{changepage}
+\addto{\captionsenglish}{\renewcommand{\refname}{}}
+
+\begin{document}
+
+\title{%
+  Group Project - Neo4j \\
+  \large of Systems and Methods for Big
+    and Unstructured Data Course \\(SMBUD)\\
+    held by\\ Brambilla Marco\\ Tocchetti Andrea \\
+  \vspace{5mm}
+  \Large \textbf{Group 78}}
+\author{Pisante Giuseppe\\
+  \texttt{10696936}
+  \and
+  Raffaelli Martina\\
+  \texttt{10709893}
+}
+\date{Academic year 2024/2025}
+\maketitle
+\begin{center}
+  \includegraphics[width=4cm]{polilogo.png}\\
+\end{center}
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+\paragraph{} The project aims to design and implement a database system to support the management of data related to the film industry. The database will include entities such as Person (actor, director, writer), Title (film, TV series), Episode, ratings, and genre. The goal is to create a comprehensive system that can store and query information about films, TV series, and the people involved in their production.
+The project will develop with Neo4j, to exploit the relations between the entities and find significant insights from the data, such as collaborations between directors and actors, trend of genres over time, most working actors and the most successful films.
+\section{Assumptions}
+\paragraph{} The project is based on the following assumptions:
+\begin{itemize}[noitemsep]
+   \item[-] Each person has a unique ID and a name, surname, and date of birth. Some could also have a death date, if passed away.
+   \item[-] Each person can be associated with multiple roles (actor, director, writer, archive footage, music department, producer)
+   \item[-] Each title has a unique identifier and a title type (film, TV series, shortfilm)
+   \item[-] Each title can have multiple episodes
+   \item[-] Each title can have multiple genres
+   \item[-] Each user can rate a title if and only if it has watched the film
+   \item[-] Each title has a unique rating, average rating from the users, and the number of votes
+   \item[-] Each person can be associated with multiple titles
+   \item[-] Each title can have multiple people associated with it
+\end{itemize}
+\clearpage
+\section{ER diagram}
+\paragraph{}
+	\begin{center}
+ 		\includegraphics[width = 15 cm]{polilogo.png}
+		\captionof{figure}{E-R Diagram}
+	\end{center}
+  \subsection{Entities}
+\par Starting from the considerations previously exposed regarding the implementation hypotheses, we have drawn an ER diagram (\textbf{Figure 1}) which includes 5 different entities and 7 many-to-many relationships described below in the logical model: \par
+  \begin{itemize}[noitemsep]
+  \item[-]	\textbf{Person}(\underline{nconst}, PrimaryName, BirthYear, DeathYear, PrimaryProfession, KnownForTitles)
+	\item[-]	\textbf{Title}(\underline{tconst}, PrimaryTitle, OriginalTitle, TitleType, StartYear, EndYear, RuntimeMinutes, Genres)
+	\item[-]	\textbf{Episode}(\underline{tconst}, ParentTconst, SeasonNumber, EpisodeNumber)
+	\item[-]	\textbf{Ratings}(\underline{tconst}, AverageRating, NumVotes)
+	\item[-]	\textbf{Genre}(Name)
+  \end{itemize} \par
+The \textbf{Person} entity describes every possible individual with their own personal data, including their primary profession and titles they are known for. 
+The \textbf{Title} entity represents films, TV series or short films with their respective attributes. 
+The \textbf{Episode} entity is used to detail episodes of TV series, linked to their parent series. 
+The \textbf{Ratings} entity captures the average rating and number of votes for each title. 
+Finally, the \textbf{Genre} entity categorizes the titles into different genres.
+
+\subsection{Relationships}
+\begin{itemize}[noitemsep]
+  \item[-]	\textbf{HasRole}(\underline{nconst}, \underline{tconst}, Category)
+  \item[-]	\textbf{HasRating}(\underline{nconst}, \underline{tconst}, Rating)
+  \item[-]	\textbf{HasGenre}(\underline{tconst}, \underline{Genre})
+  \item[-]	\textbf{HasEpisode}(\underline{tconst}, \underline{Episode})
+  \item[-]	\textbf{HasTitle}(\underline{nconst}, \underline{tconst})
+  \item[-]	\textbf{HasPerson}(\underline{tconst}, \underline{nconst})
+  \item[-]	\textbf{HasTitleGenre}(\underline{tconst}, \underline{Genre})
+\end{itemize}
+
+
+\section{Dataset description}
+\paragraph{} One of the most critical parts of working with Big Data is managing large amounts of data collected in large datasets. To test and simulate the use of the database for contact tracing activities, some sample datasets were generated, saved in .csv format and imported into Neo4j through the command: \texttt{LOAD CSV FROM "file: ///file.csv" AS ...}. \par
+Each dataset is divided into various fields that trace the structure of the tables expressed in the ER model, each one was generated randomly through Python scripts (you can find these ones into the folder \texttt{"db"}) and to experiment and perform at best the possible tests on the queries and commands that can be executed thanks to Neo4j the number of entries foreseen for each dataset is in the order of magnitude of the hundreds, as a whole, starting exclusively from the data loaded from the datasets, the database provides:
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+Homes & 101 & Residence Relationship & 300 \\
+\hline
+People & 300 & Meetings & 726 \\
+\hline
+Public Places & 20 & Public Places Visits & 600 \\
+\hline
+Vaccine Types & 4 & Vaccinations & 526 \\
+\hline
+Test Types & 2 & Tests & 450\\
+\hline
+\textbf{TOTAL NODES} & \textbf{427} & \textbf{TOTAL RELATIONSHIPS} & \textbf{2602}\\
+\hline
+\end{tabular}
+\end{center}
+\section{Queries and Commands}
+\paragraph{} The correct functioning of the information system involves the implementation of some essential commands and queries for the database in order to properly support the app and to ensure the right execution of searches among the data available for statistical or practical purposes. \par
+\paragraph{} First of all you need to load the .csv files with the query you can find following the path \texttt{"documents/importDB.txt"}
+\subsection{Queries}
+\subsubsection{Find how many people went without greenpass in a public place}
+\paragraph{} This query allows us to find all the people that went in a public place without the GreenPass and the datetime related.
+\begin{center}
+	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
+\end{center}
+\paragraph{} The output is given by: 
+\begin{itemize}
+\item[•] The name and the surname of the person
+\item[•] The entrance time in the public place
+\item[•] The name of the public place
+\begin{center}
+	\fbox{\includegraphics[width = 12 cm]{polilogo.png}}
+\end{center}
+\end{itemize}
+\clearpage
+\subsubsection{Find who lives with an infected individual}
+\paragraph{} This query allows us to detect a "family contact" with an infected person and obtain the people that need to be quarantined.
+\begin{center}
+	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
+\end{center}
+\paragraph{} The output is given by: 
+\begin{itemize}
+\item[•] The house identifier
+\item[•] The name and the surname of the person
+\item[•] The name and the surname of the infected cohabitant
+\begin{center}
+	\fbox{\includegraphics[width = 10 cm]{polilogo.png}}
+	\captionof{figure}{Visual representation of the result with NeoDash}
+\end{center}
+\end{itemize}
+\subsubsection{Find public place contact with infect people}
+\paragraph{} This query allows us to find the people who went in the same public place (e.g. restaurant, cinema,...) at the same time with infected people starting from 15 days before their positive test.
+\begin{center}
+	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
+\end{center}
+\paragraph{} The output is given by: 
+\begin{itemize}
+\item[•] The name and the surname of the person
+\item[•] The name and the surname of the infected cohabitant
+\item[•] The datetime of the entrance of the health person
+\item[•] The datetime of the entrance of the ill person
+\item[•] The public place
+\begin{center}
+	\fbox{\includegraphics[width = 14 cm]{polilogo.png}}
+\end{center}
+\end{itemize}
+
+\subsubsection{Find who got vaccinated in a temporal range}
+\paragraph{} This query allows us to find all the vaccinated people in the temporal range of October 2021.
+\begin{center}
+	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
+\end{center}
+\paragraph{} The output is given by: 
+\begin{itemize}
+\item[•] The name and the surname of the person
+\item[•] The type of the vaccine
+\item[•] The datetime of the vaccine
+\begin{center}
+	\fbox{\includegraphics[width = 12 cm]{polilogo.png}}
+\end{center}
+\end{itemize}
+\pagebreak
+
+\subsubsection{Statistical analysis of the vaccination campaign}
+\paragraph{} This query allows us to compute an analysis on the number of the vaccinated people (and the percentage) grouped by age ranges.
+\begin{center}
+	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
+\end{center}
+\paragraph{} The output is given by: 
+\begin{itemize}
+\item[•] Total people
+\item[•] Total vaccinated people (with \%)
+\item[•] Vaccinated people in age ranges (with \%)
+\begin{center}
+	\fbox{\includegraphics[width = 14 cm]{polilogo.png}}
+\end{center}
+\end{itemize}
+
+\subsection{Commands}
+\subsubsection{Federico moves in an other house (CREATE)}
+\paragraph{} In this command we simulate a person moving in an another house.
+\begin{center}
+	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
+\end{center}
+
+\subsubsection{Delete all the public place records older than 1 year (DELETE) }
+\paragraph{} In this command we simulate the need of removing old records that are not useful anymore.
+\begin{center}
+	\fbox{\includegraphics[width = 11 cm]{polilogo.png}}
+\end{center}
+
+\subsubsection{Name change of public place (UPDATE)}
+\paragraph{} In this command we simulate the need, of a public place manager, of changing name of the activity.
+\begin{center}
+	\fbox{\includegraphics[width = 8 cm]{polilogo.png}}
+\end{center}
+\clearpage
+\section{UI description \& User Guide}
+\subsection{UI description}
+\paragraph{}The design of the information system ended with the development of \emph{ContagionShield}, an application connected to the database with a simple GUI that is very intuitive and easy to use. The UI was created with the Python programming language by means of the libraries: \emph{PySimpleGUI} for the creation of the graphical interface, \emph{Py2neo} to work with Neo4j through the syntax offered by Python and \emph{pandas} to manage the analysis and manipulation of data, you can find these ones into the folder \texttt{"contagionshield"}. \par
+	\begin{center}
+ 		\includegraphics[width = 11 cm]{polilogo.png}
+		\captionof{figure}{Query Interface}
+	\end{center}
+As you can see from \textbf{Figure 3}, the main screen of the application is divided into two sections: one on the left that allows you to create customizable queries by choosing date, place, time interval and whether to display the vaccinated, non-vaccinated or with negative test, in \textbf{Figure 4} there is an example query with the results obtained; the other side section on the right (\textbf{Figure 5}) presents some predefined queries, some of them follow the ones specified and described in Chapter 5 of the report. \par
+	\begin{center}
+ 		\includegraphics[width = 11 cm]{polilogo.png}
+		\captionof{figure}{Example Query with Results}
+	\end{center}
+	\begin{center}
+ 		\includegraphics[width = 11 cm]{polilogo.png}
+		\captionof{figure}{Predefined Queries}
+	\end{center}
+\pagebreak
+Finally, as shown in \textbf{Figure 6}, it is possible to execute some of the commands already presented in Chapter 5 by reaching the appropriate section of the application by means of the \texttt{"Commands"} button in the lower left corner of the main screen. The executable commands allow you to create new meetings between several people by indicating their social security numbers, the date and time, create new visits to public places by specifying who went to a given place and when and in the end you can also delete all the visits to public places recorded in the last year. \par
+	\begin{center}
+ 		\includegraphics[width = 11 cm]{polilogo.png}
+		\captionof{figure}{Command Interface}
+	\end{center}
+\subsection{User Guide}
+\paragraph{}
+In order to run \emph{ContagionShield} it is necessary to verify some requirements and to perform some actions:
+\begin{itemize}[noitemsep]
+   \item[-] At first you have to check if you have the right Python version installed by using the command: \texttt{python --version}, if not you could download it from the official website: https://www.python.org/ 
+   \item[-] Then make sure your local database is at \texttt{localhost:7687} and that it has \texttt{"smbud"} as password
+   \item[-] Install the required packages (in the "contagionshield" folder): \texttt{pip install -r requirements.txt}
+   \item[-] Finally make it run by navigating to the folder where you have been saved the materials, then into \texttt{"contagionshield"} folder and run: \texttt{python contagionshield.py}
+   \item[-] From there you can execute queries about the collected data
+\end{itemize}
+\newpage
+\section{References \& Sources}
+  \begin{thebibliography}{9}
+    \bibitem{} Course Slides
+    \bibitem{} https://pysimplegui.readthedocs.io/en/latest/call%20reference/
+    \bibitem{} https://py2neo.org/
+    \bibitem{} https://neo4j.com/docs/cypher-manual/current/
+    \bibitem{} https://neo4j.com/developer/python/
+    \bibitem{} http://iniball.altervista.org/Software/ProgER
+    \bibitem{} https://neo4j.com/developer/cypher/
+    \bibitem{} https://pandas.pydata.org/docs/
+  \end{thebibliography}
+\end{document}
