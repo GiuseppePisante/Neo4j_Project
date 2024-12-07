@@ -81,169 +81,188 @@ Finally, the \textbf{Genre} entity categorizes the titles into different genres.
 
 \subsection{Relationships}
 \begin{itemize}[noitemsep]
-  \item[-]	\textbf{HasRole}(\underline{nconst}, \underline{tconst}, Category)
-  \item[-]	\textbf{HasRating}(\underline{nconst}, \underline{tconst}, Rating)
-  \item[-]	\textbf{HasGenre}(\underline{tconst}, \underline{Genre})
-  \item[-]	\textbf{HasEpisode}(\underline{tconst}, \underline{Episode})
-  \item[-]	\textbf{HasTitle}(\underline{nconst}, \underline{tconst})
-  \item[-]	\textbf{HasPerson}(\underline{tconst}, \underline{nconst})
-  \item[-]	\textbf{HasTitleGenre}(\underline{tconst}, \underline{Genre})
+  
+    \item[\textbf{ACTED\_IN}] $(Person)-[:ACTED\_IN]->(Title)$
+    
+    Relationship between a Person, whose primary profession is actor, and a Title.
+    \item[\textbf{DIRECTED}] $(Person)-[:DIRECTED]->(Title)$
+    
+    Relationship between a Person, whose primary profession is director, and a Title.
+    \item[\textbf{WROTE}] $(Person)-[:WROTE]->(Title)$
+    
+    Relationship between a Person, whose primary profession is writer, and a Title.
+    \item[\textbf{PART\_OF}] $(Episode)-[:PART\_OF]->(Title)$
+    
+    Relationship between an Episode and its parent Title, whose TitleType is TV series.
+    \item[\textbf{HAS\_GENRE}] $(Title)-[:HAS\_GENRE]->(Genre)$
+    
+    Relationship between a Title and a Genre.
+    \item[\textbf{HAS\_RATING}] $(Title)-[:HAS\_RATING]->(Rating)$
+    
+    Relationship between a Title and its Rating.
+
+    
 \end{itemize}
 
 
-\section{Dataset description}
-\paragraph{} One of the most critical parts of working with Big Data is managing large amounts of data collected in large datasets. To test and simulate the use of the database for contact tracing activities, some sample datasets were generated, saved in .csv format and imported into Neo4j through the command: \texttt{LOAD CSV FROM "file: ///file.csv" AS ...}. \par
-Each dataset is divided into various fields that trace the structure of the tables expressed in the ER model, each one was generated randomly through Python scripts (you can find these ones into the folder \texttt{"db"}) and to experiment and perform at best the possible tests on the queries and commands that can be executed thanks to Neo4j the number of entries foreseen for each dataset is in the order of magnitude of the hundreds, as a whole, starting exclusively from the data loaded from the datasets, the database provides:
-\begin{center}
-\begin{tabular}{|l|l|l|l|}
-\hline
-Homes & 101 & Residence Relationship & 300 \\
-\hline
-People & 300 & Meetings & 726 \\
-\hline
-Public Places & 20 & Public Places Visits & 600 \\
-\hline
-Vaccine Types & 4 & Vaccinations & 526 \\
-\hline
-Test Types & 2 & Tests & 450\\
-\hline
-\textbf{TOTAL NODES} & \textbf{427} & \textbf{TOTAL RELATIONSHIPS} & \textbf{2602}\\
-\hline
-\end{tabular}
-\end{center}
-\section{Queries and Commands}
-\paragraph{} The correct functioning of the information system involves the implementation of some essential commands and queries for the database in order to properly support the app and to ensure the right execution of searches among the data available for statistical or practical purposes. \par
-\paragraph{} First of all you need to load the .csv files with the query you can find following the path \texttt{"documents/importDB.txt"}
-\subsection{Queries}
-\subsubsection{Find how many people went without greenpass in a public place}
-\paragraph{} This query allows us to find all the people that went in a public place without the GreenPass and the datetime related.
-\begin{center}
-	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
-\end{center}
-\paragraph{} The output is given by: 
-\begin{itemize}
-\item[•] The name and the surname of the person
-\item[•] The entrance time in the public place
-\item[•] The name of the public place
-\begin{center}
-	\fbox{\includegraphics[width = 12 cm]{polilogo.png}}
-\end{center}
-\end{itemize}
-\clearpage
-\subsubsection{Find who lives with an infected individual}
-\paragraph{} This query allows us to detect a "family contact" with an infected person and obtain the people that need to be quarantined.
-\begin{center}
-	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
-\end{center}
-\paragraph{} The output is given by: 
-\begin{itemize}
-\item[•] The house identifier
-\item[•] The name and the surname of the person
-\item[•] The name and the surname of the infected cohabitant
-\begin{center}
-	\fbox{\includegraphics[width = 10 cm]{polilogo.png}}
-	\captionof{figure}{Visual representation of the result with NeoDash}
-\end{center}
-\end{itemize}
-\subsubsection{Find public place contact with infect people}
-\paragraph{} This query allows us to find the people who went in the same public place (e.g. restaurant, cinema,...) at the same time with infected people starting from 15 days before their positive test.
-\begin{center}
-	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
-\end{center}
-\paragraph{} The output is given by: 
-\begin{itemize}
-\item[•] The name and the surname of the person
-\item[•] The name and the surname of the infected cohabitant
-\item[•] The datetime of the entrance of the health person
-\item[•] The datetime of the entrance of the ill person
-\item[•] The public place
-\begin{center}
-	\fbox{\includegraphics[width = 14 cm]{polilogo.png}}
-\end{center}
-\end{itemize}
+%\subsection{Constraints:}
+%\begin{itemize}[noitemsep]
+%    \item \textbf{Unique Constraints:}
+%    \begin{itemize}
+%        \item \texttt{CREATE CONSTRAINT FOR (p:Person) REQUIRE p.nconst IS UNIQUE}
+%        \item \texttt{CREATE CONSTRAINT FOR (t:Title) REQUIRE t.tconst IS UNIQUE}
+%        \item \texttt{CREATE CONSTRAINT FOR (e:Episode) REQUIRE (e.tconst, e.ParentTconst,}
+%         \texttt{e.SeasonNumber, e.EpisodeNumber) IS UNIQUE}
+%        \item \texttt{CREATE CONSTRAINT FOR (r:Ratings) REQUIRE r.tconst IS UNIQUE}
+%        \item \texttt{CREATE CONSTRAINT FOR (g:Genre) REQUIRE g.Name IS UNIQUE}
+%    \end{itemize}
+%    
+%    \item \textbf{Foreign Key Constraints:}
+%    \begin{itemize}
+%        \item \texttt{CREATE CONSTRAINT FOR (e:Episode)-[:PART_OF]->(t:Title)}
+%        \texttt{REQUIRE e.ParentTconst = t.tconst}
+%        \item \texttt{CREATE CONSTRAINT FOR (r:Ratings)-[:RATED]->(t:Title) REQUIRE r.tconst = t.tconst}
+%        \item \texttt{CREATE CONSTRAINT FOR (a:ACTED_IN)-[:ACTED_IN]->(p:Person, t:Title)}
+%        \texttt{REQUIRE a.Person = p.nconst AND a.Title = t.tconst}
+%        \item \texttt{CREATE CONSTRAINT FOR (d:DIRECTED)-[:DIRECTED]->(p:Person, t:Title)}
+%        \texttt{REQUIRE d.Person = p.nconst AND d.Title = t.tconst}
+%        \item \texttt{CREATE CONSTRAINT FOR (w:WROTE)-[:WROTE]->(p:Person, t:Title)}
+%        \texttt{REQUIRE w.Person = p.nconst AND w.Title = t.tconst}
+%        \item \texttt{CREATE CONSTRAINT FOR (e:Episode)-[:PART_OF]->(t:Title)}
+%        \texttt{REQUIRE e.ParentTconst = t.tconst}
+%        \item \texttt{CREATE CONSTRAINT FOR (h:HAS_GENRE)-[:HAS_GENRE]->(t:Title, g:Genre)}
+%        \texttt{REQUIRE h.Title = t.tconst AND h.Genre = g.Name}
+%    \end{itemize}
+%    
+%    \item \textbf{Other Constraints:}
+%    \begin{itemize}
+%        \item \texttt{CREATE CONSTRAINT FOR (t:Title) REQUIRE t.StartYear <= t.EndYear}
+%        \item \texttt{CREATE CONSTRAINT FOR (e:Episode) REQUIRE e.SeasonNumber > 0 AND e.EpisodeNumber > 0}
+%        \item \texttt{CREATE CONSTRAINT FOR (r:Ratings) REQUIRE r.AverageRating >= 0 AND r.AverageRating <= 10}
+%        \item \texttt{CREATE CONSTRAINT FOR (r:Ratings) REQUIRE r.NumVotes >= 0}
+%    \end{itemize}
+%\end{itemize}
 
-\subsubsection{Find who got vaccinated in a temporal range}
-\paragraph{} This query allows us to find all the vaccinated people in the temporal range of October 2021.
-\begin{center}
-	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
-\end{center}
-\paragraph{} The output is given by: 
-\begin{itemize}
-\item[•] The name and the surname of the person
-\item[•] The type of the vaccine
-\item[•] The datetime of the vaccine
-\begin{center}
-	\fbox{\includegraphics[width = 12 cm]{polilogo.png}}
-\end{center}
-\end{itemize}
-\pagebreak
+\section{Import database}
 
-\subsubsection{Statistical analysis of the vaccination campaign}
-\paragraph{} This query allows us to compute an analysis on the number of the vaccinated people (and the percentage) grouped by age ranges.
-\begin{center}
-	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
-\end{center}
-\paragraph{} The output is given by: 
-\begin{itemize}
-\item[•] Total people
-\item[•] Total vaccinated people (with \%)
-\item[•] Vaccinated people in age ranges (with \%)
-\begin{center}
-	\fbox{\includegraphics[width = 14 cm]{polilogo.png}}
-\end{center}
-\end{itemize}
+\section{Cypher Queries}
+\subsection{Trova tutti gli attori che hanno lavorato in un titolo con un determinato genere}
+MATCH (p:Person)-[:ACTED_IN]->(t:Title)-[:HAS_GENRE]->(g:Genre)
+WHERE g.Name = 'Drama'
+RETURN p.PrimaryName, t.PrimaryTitle
 
-\subsection{Commands}
-\subsubsection{Federico moves in an other house (CREATE)}
-\paragraph{} In this command we simulate a person moving in an another house.
-\begin{center}
-	\fbox{\includegraphics[width = 13 cm]{polilogo.png}}
-\end{center}
+\subsection{Identifica i registi che hanno diretto il maggior numero di titoli}
+MATCH (p:Person)-[:DIRECTED]->(t:Title)
+RETURN p.PrimaryName, COUNT(t) AS TitlesDirected
+ORDER BY TitlesDirected DESC
+LIMIT 10
 
-\subsubsection{Delete all the public place records older than 1 year (DELETE) }
-\paragraph{} In this command we simulate the need of removing old records that are not useful anymore.
-\begin{center}
-	\fbox{\includegraphics[width = 11 cm]{polilogo.png}}
-\end{center}
+\subsection{Trova tutti i titoli con una valutazione superiore a 8 e con più di 10.000 voti}
+MATCH (t:Title)-[:HAS_RATING]->(r:Ratings)
+WHERE r.AverageRating > 8 AND r.NumVotes > 10000
+RETURN t.PrimaryTitle, r.AverageRating, r.NumVotes
+ORDER BY r.AverageRating DESC
 
-\subsubsection{Name change of public place (UPDATE)}
-\paragraph{} In this command we simulate the need, of a public place manager, of changing name of the activity.
-\begin{center}
-	\fbox{\includegraphics[width = 8 cm]{polilogo.png}}
-\end{center}
-\clearpage
-\section{UI description \& User Guide}
-\subsection{UI description}
-\paragraph{}The design of the information system ended with the development of \emph{ContagionShield}, an application connected to the database with a simple GUI that is very intuitive and easy to use. The UI was created with the Python programming language by means of the libraries: \emph{PySimpleGUI} for the creation of the graphical interface, \emph{Py2neo} to work with Neo4j through the syntax offered by Python and \emph{pandas} to manage the analysis and manipulation of data, you can find these ones into the folder \texttt{"contagionshield"}. \par
-	\begin{center}
- 		\includegraphics[width = 11 cm]{polilogo.png}
-		\captionof{figure}{Query Interface}
-	\end{center}
-As you can see from \textbf{Figure 3}, the main screen of the application is divided into two sections: one on the left that allows you to create customizable queries by choosing date, place, time interval and whether to display the vaccinated, non-vaccinated or with negative test, in \textbf{Figure 4} there is an example query with the results obtained; the other side section on the right (\textbf{Figure 5}) presents some predefined queries, some of them follow the ones specified and described in Chapter 5 of the report. \par
-	\begin{center}
- 		\includegraphics[width = 11 cm]{polilogo.png}
-		\captionof{figure}{Example Query with Results}
-	\end{center}
-	\begin{center}
- 		\includegraphics[width = 11 cm]{polilogo.png}
-		\captionof{figure}{Predefined Queries}
-	\end{center}
-\pagebreak
-Finally, as shown in \textbf{Figure 6}, it is possible to execute some of the commands already presented in Chapter 5 by reaching the appropriate section of the application by means of the \texttt{"Commands"} button in the lower left corner of the main screen. The executable commands allow you to create new meetings between several people by indicating their social security numbers, the date and time, create new visits to public places by specifying who went to a given place and when and in the end you can also delete all the visits to public places recorded in the last year. \par
-	\begin{center}
- 		\includegraphics[width = 11 cm]{polilogo.png}
-		\captionof{figure}{Command Interface}
-	\end{center}
-\subsection{User Guide}
-\paragraph{}
-In order to run \emph{ContagionShield} it is necessary to verify some requirements and to perform some actions:
-\begin{itemize}[noitemsep]
-   \item[-] At first you have to check if you have the right Python version installed by using the command: \texttt{python --version}, if not you could download it from the official website: https://www.python.org/ 
-   \item[-] Then make sure your local database is at \texttt{localhost:7687} and that it has \texttt{"smbud"} as password
-   \item[-] Install the required packages (in the "contagionshield" folder): \texttt{pip install -r requirements.txt}
-   \item[-] Finally make it run by navigating to the folder where you have been saved the materials, then into \texttt{"contagionshield"} folder and run: \texttt{python contagionshield.py}
-   \item[-] From there you can execute queries about the collected data
-\end{itemize}
+\subsection{Elenca tutti i generi di un titolo specifico}
+MATCH (t:Title)-[:HAS_GENRE]->(g:Genre)
+WHERE t.PrimaryTitle = 'Inception'
+RETURN g.Name
+
+\subsection{Trova i migliori titoli per ogni genere}
+MATCH (t:Title)-[:HAS_GENRE]->(g:Genre), (t)-[:HAS_RATING]->(r:Ratings)
+WITH g.Name AS Genre, t.PrimaryTitle AS Title, r.AverageRating AS Rating
+ORDER BY Genre, Rating DESC
+RETURN Genre, Title, Rating
+
+\subsection{Esplora gli attori che hanno lavorato frequentemente con lo stesso regista}
+MATCH (d:Person)-[:DIRECTED]->(t:Title)<-[:ACTED_IN]-(a:Person)
+RETURN d.PrimaryName AS Director, a.PrimaryName AS Actor, COUNT(t) AS Collaborations
+ORDER BY Collaborations DESC
+LIMIT 10
+
+\subsection{Trova tutti gli episodi di una determinata serie TV}
+MATCH (e:Episode)-[:PART_OF]->(t:Title)
+WHERE t.PrimaryTitle = 'Breaking Bad'
+RETURN e.SeasonNumber, e.EpisodeNumber, e.tconst
+ORDER BY e.SeasonNumber, e.EpisodeNumber
+
+\subsection{Determina il titolo con il maggior numero di episodi}
+MATCH (e:Episode)-[:PART_OF]->(t:Title)
+RETURN t.PrimaryTitle, COUNT(e) AS EpisodeCount
+ORDER BY EpisodeCount DESC
+LIMIT 1
+
+\subsection{Trova tutte le serie TV con una durata media di episodio maggiore di 50 minuti}
+MATCH (e:Episode)-[:PART_OF]->(t:Title)
+WHERE t.TitleType = 'tvSeries' AND t.RuntimeMinutes > 50
+RETURN t.PrimaryTitle, t.RuntimeMinutes
+
+\subsection{Identifica gli attori più prolifici}
+MATCH (p:Person)-[:ACTED_IN]->(t:Title)
+RETURN p.PrimaryName, COUNT(t) AS NumberOfTitles
+ORDER BY NumberOfTitles DESC
+LIMIT 10
+
+\subsection{Trova i titoli diretti, scritti e recitati dalla stessa persona}
+MATCH (p:Person)-[:DIRECTED]->(t:Title)<-[:WROTE]-(p)-[:ACTED_IN]->(t)
+RETURN p.PrimaryName, t.PrimaryTitle
+
+\subsection{Trova i titoli senza rating}
+MATCH (t:Title)
+WHERE NOT (t)-[:HAS_RATING]->()
+RETURN t.PrimaryTitle
+
+\subsection{Analizza la distribuzione dei generi per ogni attore}
+MATCH (p:Person)-[:ACTED_IN]->(t:Title)-[:HAS_GENRE]->(g:Genre)
+RETURN p.PrimaryName, g.Name, COUNT(t) AS NumberOfTitles
+ORDER BY p.PrimaryName, NumberOfTitles DESC
+
+\subsection{Trova i registi che lavorano in più generi}
+MATCH (p:Person)-[:DIRECTED]->(t:Title)-[:HAS_GENRE]->(g:Genre)
+RETURN p.PrimaryName, COLLECT(DISTINCT g.Name) AS Genres, COUNT(g) AS TotalGenres
+ORDER BY TotalGenres DESC
+
+\subsection{Trova i titoli con la durata massima}
+MATCH (t:Title)
+WHERE t.RuntimeMinutes IS NOT NULL
+RETURN t.PrimaryTitle, t.RuntimeMinutes
+ORDER BY t.RuntimeMinutes DESC
+LIMIT 10
+
+\subsection{Identifica gli attori più votati}
+MATCH (p:Person)-[:ACTED_IN]->(t:Title)-[:HAS_RATING]->(r:Ratings)
+RETURN p.PrimaryName, SUM(r.NumVotes) AS TotalVotes
+ORDER BY TotalVotes DESC
+LIMIT 10
+
+\subsection{Trova gli episodi con la migliore valutazione di una serie specifica}
+MATCH (e:Episode)-[:PART_OF]->(t:Title)-[:HAS_RATING]->(r:Ratings)
+WHERE t.PrimaryTitle = 'The Office'
+RETURN e.SeasonNumber, e.EpisodeNumber, r.AverageRating
+ORDER BY r.AverageRating DESC
+
+\subsection{Trova tutte le persone che hanno collaborato in almeno 5 titoli}
+MATCH (p:Person)-[:ACTED_IN|DIRECTED|WROTE]->(t:Title)
+WITH p, COUNT(DISTINCT t) AS CollaborationCount
+WHERE CollaborationCount >= 5
+RETURN p.PrimaryName, CollaborationCount
+
+\subsection{Trova le serie TV più popolari (somma dei voti degli episodi)}
+MATCH (e:Episode)-[:PART_OF]->(t:Title)-[:HAS_RATING]->(r:Ratings)
+WHERE t.TitleType = 'tvSeries'
+RETURN t.PrimaryTitle, SUM(r.NumVotes) AS TotalVotes
+ORDER BY TotalVotes DESC
+LIMIT 10
+
+\subsection{Analizza i registi più votati per i loro titoli}
+MATCH (p:Person)-[:DIRECTED]->(t:Title)-[:HAS_RATING]->(r:Ratings)
+RETURN p.PrimaryName, SUM(r.NumVotes) AS TotalVotes, AVG(r.AverageRating) AS AvgRating
+ORDER BY TotalVotes DESC
+LIMIT 10
+
+
+
+
 \newpage
 \section{References \& Sources}
   \begin{thebibliography}{9}
