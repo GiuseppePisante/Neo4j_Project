@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.11.22)  6 DEC 2024 11:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.11.22)  7 DEC 2024 18:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -548,29 +548,7 @@ File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count299
 \l__pdf_internal_box=\box65
 )
-(aux_files/report.aux
-
-LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `' multiply defined.
-
-
-LaTeX Warning: Label `' multiply defined.
-
-)
+(aux_files/report.aux)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
@@ -591,7 +569,8 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 21.
 LaTeX Font Info:    ... okay on input line 21.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 21.
 LaTeX Font Info:    ... okay on input line 21.
- (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count300
 \scratchdimen=\dimen264
@@ -643,7 +622,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <14.4> on input line 38.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 38.
-<polilogo.png, id=91, 666.49pt x 489.83pt>
+<polilogo.png, id=23, 666.49pt x 489.83pt>
 File: polilogo.png Graphic file (type png)
 <use polilogo.png>
 Package pdftex.def Info: polilogo.png  used on input line 39.
@@ -685,198 +664,33 @@ e, Ti-tle-Type, Star-tYear, EndYear,
 
 [4
 
-] [5]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 121.
-(pdftex.def)             Requested size: 369.88582pt x 271.85138pt.
- [6]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 129.
-(pdftex.def)             Requested size: 341.43306pt x 250.9386pt.
- [7]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 136.
-(pdftex.def)             Requested size: 369.88582pt x 271.85138pt.
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 144.
-(pdftex.def)             Requested size: 284.52756pt x 209.113pt.
-
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 145.
-See the caption package documentation for explanation.
-
-[8
-
 ]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 151.
-(pdftex.def)             Requested size: 369.88582pt x 271.85138pt.
- [9]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 161.
-(pdftex.def)             Requested size: 398.33858pt x 292.75671pt.
+! Undefined control sequence.
+<recently read> \lstinline 
+                           
+l.112        \item \lstinline
+                             \texttt{CREATE CONSTRAINT FOR (p:Person) REQUIR...
 
-Overfull \hbox (44.51326pt too wide) in paragraph at lines 161--162
- [] 
- []
-
-[10]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 168.
-(pdftex.def)             Requested size: 369.88582pt x 271.85138pt.
- [11]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 176.
-(pdftex.def)             Requested size: 341.43306pt x 250.9386pt.
- [12] [13]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 184.
-(pdftex.def)             Requested size: 369.88582pt x 271.85138pt.
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 192.
-(pdftex.def)             Requested size: 398.33858pt x 292.75671pt.
-
-Overfull \hbox (44.51326pt too wide) in paragraph at lines 192--193
- [] 
- []
-
-[14]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 200.
-(pdftex.def)             Requested size: 369.88582pt x 271.85138pt.
- [15]
-Overfull \hbox (13.93611pt too wide) in paragraph at lines 203--203
-[]\OT1/cmr/bx/n/12 Delete all the pub-lic place records older than 1 year (DELE
-TE) 
- []
-
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 206.
-(pdftex.def)             Requested size: 312.9803pt x 230.0258pt.
-[16]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 212.
-(pdftex.def)             Requested size: 227.62204pt x 167.28741pt.
- [17]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 219.
-(pdftex.def)             Requested size: 312.9803pt x 230.0258pt.
-
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 220.
-See the caption package documentation for explanation.
-
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 224.
-(pdftex.def)             Requested size: 312.9803pt x 230.0258pt.
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 225.
-See the caption package documentation for explanation.
-
-[18
-
-]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 228.
-(pdftex.def)             Requested size: 312.9803pt x 230.0258pt.
-
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 229.
-See the caption package documentation for explanation.
-
-[19]
-File: polilogo.png Graphic file (type png)
-<use polilogo.png>
-Package pdftex.def Info: polilogo.png  used on input line 234.
-(pdftex.def)             Requested size: 312.9803pt x 230.0258pt.
-
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 235.
-See the caption package documentation for explanation.
-
-[20] [21] [22pdfTeX warning (ext4): destination with the same identifier (name{
-cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    pdfTeX warning (ext4): destination with the same identifier
- (name{cite.}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.259 \end{document}
-                    ] (aux_files/report.aux)
-
-LaTeX Warning: There were multiply-defined labels.
-
-Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 85D4DEF0F65CD8E5355FD61D99FFDDFA;4204.
- ) 
+? x
+ 
 Here is how much of TeX's memory you used:
- 21335 strings out of 480247
- 403929 string characters out of 5896150
- 678401 words of memory out of 5000000
- 38875 multiletter control sequences out of 15000+600000
- 476057 words of font info for 51 fonts, out of 8000000 for 9000
+ 21254 strings out of 480247
+ 402958 string characters out of 5896150
+ 673332 words of memory out of 5000000
+ 38857 multiletter control sequences out of 15000+600000
+ 475541 words of font info for 49 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,6n,89p,637b,635s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/giuseppepisante/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tc
-rm1200.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
-10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on aux_files/report.pdf (22 pages, 196369 bytes).
+ 84i,6n,89p,458b,442s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on aux_files/report.pdf (4 pages, 148425 bytes).
 PDF statistics:
- 280 PDF objects out of 1000 (max. 8388607)
- 236 compressed objects within 3 object streams
- 74 named destinations out of 1000 (max. 500000)
- 186 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 86 PDF objects out of 1000 (max. 8388607)
+ 62 compressed objects within 1 object stream
+ 14 named destinations out of 1000 (max. 500000)
+ 38 words of extra memory for PDF output out of 10000 (max. 10000000)
 
