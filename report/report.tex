@@ -316,6 +316,12 @@ category, which in this study was chosen as the category with the most orders fo
           \bottomrule
       \end{tabular}
   \end{table}
+
+  \subsubsection{Top traffic source per Country}
+  \begin{verbatim}
+
+  \end{verbatim}  
+
 \subsection{Logistic Analysis for Logistics Department}
 This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
 In particular, this is done by evaluating the closest distribution center for a specific user, the status of the order, the update of the history of the orders of user and to check if the user has some order pending, in which case the items can be sent together. 
@@ -371,7 +377,52 @@ In particular, we have to fill the history node with the latest information. In 
     })
     MERGE (u)-[:PLACES]->(newOrder);
 \end{verbatim}
+\begin{verbatim}
+  // Add the new order to the history of the user
+    MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
+    WHERE u.id = "100"
+    MATCH (o:Order)
+    WHERE o.order_id ="300000"
+    SET h.orders_list = coalesce(h.orders_list, []) + "300000",
+        h.number_of_orders = h.number_of_orders +1
+    MERGE (u)-[:USER_HAS_ORDER]->(o)
+\end{verbatim}
 
+\subsubsection{Number of orders pending}
+\begin{verbatim}
+  MATCH (u:User {id: <user_id>})-[:PLACES]->(o:Order)
+  WITH u, count(o) AS total_orders
+  WHERE total_orders = 10
+  RETURN u.id AS user_id, total_orders
+\end{verbatim}
+
+\subsubsection{Management of multiple orders}
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE u.id="100" AND o.status = 'Processing'  
+  RETURN o.order_id, o.status AS order_status, o.created_at;
+
+\end{verbatim}
+  \begin{table}[h!]
+    \centering
+    \caption{Data for Processing Task}
+    \label{tab:processing_data}
+    \begin{tabular}{l l l}
+        \toprule
+        \textbf{ID} & \textbf{Status} & \textbf{Date} \\
+        \midrule
+        300000 & Processing & 2024-12-11 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{set shipping date or delivered date}
+\begin{verbatim}
+  MATCH (o:Order ) 
+  WHERE o.order_id = "300000"
+  RETURN o.shipped_at;
+\end{verbatim}
+This can be implemented for the delivery date by switching the attribute \textbf{shipped\_at} with \textbf{delivered\_at}.
 \subsubsection{Order Status}
 \begin{verbatim}
   MATCH (u:User)-[:PLACES]->(o:Order)
