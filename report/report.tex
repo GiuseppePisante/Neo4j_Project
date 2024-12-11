@@ -107,71 +107,211 @@ Finally, the \textbf{Genre} entity categorizes the titles into different genres.
 
 
 \subsection{Constraints:}
-ciao
-
-% \section{Import database}
-% ciao
+Ciao
 \section{Cypher Queries}
-\subsection{DistributionCenter closest to each User}
+\subsection{Market Analysis for Marketing Department}
+This section of the Cypher Queries aims at providing the Marketing department with insights on the share within the market by providing the number of orders in the Countries in which the Company operates.
+In particular, this is done by providing an overview on the total orders per country, the revenue per country, a demographic overview per country and an analysis of the most present brands within a specific 
+category, which in this study was chosen as the category with the most orders for further relevance.
+\subsubsection{Total orders by Country}
 \begin{verbatim}
-  MATCH (u:User), (d:DistributionCenter)
-  WITH u, d, distance(point({latitude: u.latitude, longitude: u.longitude}),
-                      point({latitude: d.latitude, longitude: d.longitude})) AS dist
-  RETURN u.id AS user_id, d.name AS nearest_center, dist
-  ORDER BY dist ASC
-  LIMIT 10;
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  RETURN u.country AS country, COUNT(o) AS total_orders
+  ORDER BY total_orders DESC;
 \end{verbatim}
 \begin{table}[h!]
   \centering
-  \begin{tabular}{lll}
-  \toprule
-  \textbf{user\_id} & \textbf{nearest\_center} & \textbf{dist} \\ 
-  \midrule
-  58210 & Chicago IL & 1759.9113 \\ 
-  48442 & Chicago IL & 1759.9113 \\ 
-  20571 & Chicago IL & 1759.9113 \\ 
-  37767 & Philadelphia PA & 1897.4164 \\ 
-  7543  & Philadelphia PA & 1897.4164 \\ 
-  41572 & Philadelphia PA & 1897.4164 \\ 
-  \bottomrule
+  \caption{Total Orders by Country}
+  \label{tab:total_orders}
+  \begin{tabular}{l r}
+      \toprule
+      \textbf{Country} & \textbf{Total Orders} \\
+      \midrule
+      China           & 42,986 \\
+      United States   & 28,099 \\
+      Brasil          & 18,262 \\
+      South Korea     & 6,620  \\
+      France          & 5,968  \\
+      United Kingdom  & 5,673  \\
+      Germany         & 5,286  \\
+      Spain           & 4,965  \\
+      Japan           & 2,945  \\
+      Australia       & 2,630  \\
+      Belgium         & 1,441  \\
+      Poland          & 325    \\
+      Colombia        & 19     \\
+      España          & 4      \\
+      Austria         & 2      \\
+      Deutschland     & 1      \\
+      \bottomrule
   \end{tabular}
-  \caption{Output della query Neo4j.}
-  \label{tab:query_output}
-  \end{table}
+\end{table}
 
-  \subsection{Most sold products:}
+\subsubsection{Revenue per Country}
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)
+  MATCH (oi)-[:REFERS_TO]->(p:Product)
+  RETURN u.country AS country, SUM(p.cost) AS total_revenue
+  ORDER BY total_revenue DESC;
+\end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{Total Revenue by Country}
+  \label{tab:total_revenue}
+  \begin{tabular}{l r}
+      \toprule
+      \textbf{Country} & \textbf{Total Revenue} \\
+      \midrule
+      China           & 1,800,865.85 \\
+      United States   & 1,162,263.11 \\
+      Brasil          & 747,519.90 \\
+      South Korea     & 278,958.29 \\
+      France          & 243,130.02 \\
+      United Kingdom  & 242,263.07 \\
+      Germany         & 217,875.61 \\
+      Spain           & 210,278.08 \\
+      Japan           & 124,807.02 \\
+      Australia       & 106,009.74 \\
+      Belgium         & 60,226.06 \\
+      Poland          & 13,386.90 \\
+      Colombia        & 572.51 \\
+      España          & 91.87 \\
+      Deutschland     & 65.70 \\
+      Austria         & 41.51 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Demographic Overview}
+\begin{verbatim}
+  MATCH (u:User)
+  RETURN u.country AS country, 
+       COUNT(u) AS total_users,
+       AVG(u.age) AS average_age
+  ORDER BY total_users DESC;
+\end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{Total Users and Average Age by Country}
+  \label{tab:Average_age}
+  \begin{tabular}{l r r}
+      \toprule
+      \textbf{Country} & \textbf{Total Orders} & \textbf{Average Value} \\
+      \midrule
+      China           & 34,150  & 40.89 \\
+      United States   & 22,522  & 41.21 \\
+      Brasil          & 14,507  & 41.19 \\
+      South Korea     & 5,316   & 41.25 \\
+      France          & 4,700   & 41.57 \\
+      United Kingdom  & 4,561   & 41.05 \\
+      Germany         & 4,155   & 40.86 \\
+      Spain           & 4,062   & 41.01 \\
+      Japan           & 2,438   & 40.89 \\
+      Australia       & 2,146   & 40.98 \\
+      Belgium         & 1,185   & 39.54 \\
+      Poland          & 235     & 42.43 \\
+      Colombia        & 17      & 34.88 \\
+      Deutschland     & 2       & 40.50 \\
+      España          & 2       & 38.50 \\
+      Austria         & 2       & 50.00 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+  \subsubsection{Categories with the most orders}
   \begin{verbatim}  
-    MATCH (:OrderItem)-[:REFERS_TO]->(p:Product)
-    RETURN p.name AS product_name, count(*) AS sales_count
-    ORDER BY sales_count DESC
-    LIMIT 10;
+    MATCH (oi:OrderItem)-[:REFERS_TO]->(p:Product)
+    RETURN p.product_category AS category, COUNT(oi) AS total_orders
+    ORDER BY total_orders DESC
+    LIMIT 3;
   \end{verbatim}
   \begin{table}[h!]
     \centering
-    \begin{tabular}{p{8cm}r} % Colonna larga per i nomi e destra per i numeri
-    \toprule
-    \textbf{Product Name} & \textbf{Quantity} \\ 
-    \midrule
-    Wrangler Men's Premium Performance Cowboy Cut Jean & 62 \\
-    Puma Men's Socks & 48 \\
-    7 For All Mankind Men's Standard Classic Straight Leg Jean & 41 \\
-    True Religion Men's Ricky Straight Jean & 37 \\
-    Kenneth Cole Men's Straight Leg Jean & 36 \\
-    Michael Kors Men's 3 Pack Brief & 33 \\
-    HUGO BOSS Men's Long Pant & 31 \\
-    Lucky Brand Mens Men's 361 Vintage Straight Denim Jean & 31 \\
-    Thorlo Unisex Experia Running Sock & 31 \\
-    Diesel Men's Shioner Skinny Straight Leg Jean & 31 \\
-    \bottomrule
+    \caption{Categories with the most orders}
+    \label{tab:total_orders_category}
+    \begin{tabular}{l r}
+        \toprule
+        \textbf{Category} & \textbf{Total Orders} \\
+        \midrule
+        Intimates     & 13,474 \\
+        Jeans         & 12,698 \\
+        Tops \& Tees  & 11,925 \\
+        \bottomrule
     \end{tabular}
-    \caption{Top-selling men's clothing products and their quantities.}
-    \label{tab:top_selling_products}
-    \end{table}
+\end{table}
 
+   \subsubsection{Most present brands within the intimates category}
+   \begin{verbatim}
+    MATCH (oi:OrderItem)-[:REFERS_TO]->(p:Product)
+    WHERE p.category = "Intimates"
 
+    RETURN p.brand AS brand, 
+          COUNT(oi) AS total_sales
+    ORDER BY total_sales DESC
+    LIMIT 5;
+    \end{verbatim}
 
+    \begin{table}[h!]
+      \centering
+      \caption{Most present brands within the intimates categor}
+      \label{tab:total_sales}
+      \begin{tabular}{l r}
+          \toprule
+          \textbf{Brand}     & \textbf{Total Sales} \\
+          \midrule
+          Bali           & 405 \\
+          Maidenform    & 383 \\
+          Hanes         & 364 \\
+          Laura         & 342 \\
+          Vanity Fair   & 306 \\
+          \bottomrule
+      \end{tabular}
+  \end{table}
 
-
+  \subsubsection{Most present brands within the intimates category per country}
+  \begin{verbatim}
+    MATCH (u:User)-[:ORDERED]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+    WHERE p.category = "Intimates"
+    WITH u.country AS country, 
+        p.brand AS brand, 
+        COUNT(oi) AS total_sales
+    ORDER BY country, total_sales DESC
+    WITH country, COLLECT({brand: brand, total_sales: total_sales}) AS brand_sales
+    RETURN country, 
+          brand_sales[0].brand AS top_brand, 
+          brand_sales[0].total_sales AS top_sales
+    ORDER BY country;
+    \end{verbatim}
+    \begin{table}[h!]
+      \centering
+      \caption{Total Orders and Average Value by Country}
+      \label{tab:orders_and_average}
+      \begin{tabular}{l r r}
+          \toprule
+          \textbf{Country} & \textbf{Total Orders} & \textbf{Average Value} \\
+          \midrule
+          China           & 34,150  & 40.89 \\
+          United States   & 22,522  & 41.21 \\
+          Brasil          & 14,507  & 41.19 \\
+          South Korea     & 5,316   & 41.25 \\
+          France          & 4,700   & 41.57 \\
+          United Kingdom  & 4,561   & 41.05 \\
+          Germany         & 4,155   & 40.86 \\
+          Spain           & 4,062   & 41.01 \\
+          Japan           & 2,438   & 40.89 \\
+          Australia       & 2,146   & 40.98 \\
+          Belgium         & 1,185   & 39.54 \\
+          Poland          & 235     & 42.43 \\
+          Colombia        & 17      & 34.88 \\
+          Deutschland     & 2       & 40.50 \\
+          España          & 2       & 38.50 \\
+          Austria         & 2       & 50.00 \\
+          \bottomrule
+      \end{tabular}
+  \end{table}
+\subsection{Logistic Analysis for Logistics Department}
+This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
+In particular, this is done by evaluating the closest distribution center for a specific user, the status of the order, the update of the history of the orders of user and to check if the user has some order pending, in which case the items can be sent together. 
 
 \newpage
 \section{References \& Sources}
