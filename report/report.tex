@@ -43,21 +43,24 @@
 \tableofcontents
 \newpage
 \section{Introduction}
-\paragraph{} The project aims to design and implement a database system to support the management of data related to the film industry. The database will include entities such as Person (actor, director, writer), Title (film, TV series), Episode, ratings, and genre. The goal is to create a comprehensive system that can store and query information about films, TV series, and the people involved in their production.
-The project will develop with Neo4j, to exploit the relations between the entities and find significant insights from the data, such as collaborations between directors and actors, trend of genres over time, most working actors and the most successful films.
+\paragraph{} The project aims to design and implement a database system to manage and analyze data related to an e-commerce platform. The database will include entities such as Customer, Product, Order, Category, and Payment. The goal is to create an efficient system that can store and query information about customer purchases, product details, and transactions, providing valuable insights into user behavior, sales trends, and inventory management.
+\\
+The project will be developed using a relational database management system (RDBMS), which will facilitate structured querying of data to support key functions like product recommendations, customer segmentation, sales analysis, and inventory forecasting. The system will allow for tracking of customer purchase history, order details, product categories, payment methods, and discounts, helping businesses optimize their operations and enhance the customer experience.
 \section{Assumptions}
 \paragraph{} The project is based on the following assumptions:
 \begin{itemize}[noitemsep]
-   \item[-] Each person has a unique ID and a name, surname, and date of birth. Some could also have a death date, if passed away.
-   \item[-] Each person can be associated with multiple roles (actor, director, writer, archive footage, music department, producer)
-   \item[-] Each title has a unique identifier and a title type (film, TV series, shortfilm)
-   \item[-] Each title can have multiple episodes
-   \item[-] Each title can have multiple genres
-   \item[-] Each user can rate a title if and only if it has watched the film
-   \item[-] Each title has a unique rating, average rating from the users, and the number of votes
-   \item[-] Each person can be associated with multiple titles
-   \item[-] Each title can have multiple people associated with it
+   \item[-] Each customer has a unique ID, name, surname, email address, and date of birth.
+   \item[-] Each product has a unique identifier, name, description, price, and category.
+   \item[-] Each product can be associated with multiple categories.
+   \item[-] Each customer can place multiple orders.
+   \item[-] Each order can contain multiple products.
+   \item[-] Each order has a unique ID, order date, total amount, and payment method.
+   \item[-] Each product can have multiple variants (e.g., size, color).
+   \item[-] Each product can have multiple reviews, where each review includes a rating and comments from a customer.
+   \item[-] Each payment is associated with a unique transaction ID, payment method, and amount.
+   \item[-] Each customer can leave a review for a product if and only if they have purchased it.
 \end{itemize}
+
 \clearpage
 \section{ER diagram}
 \paragraph{}
@@ -66,20 +69,24 @@ The project will develop with Neo4j, to exploit the relations between the entiti
 		\captionof{figure}{E-R Diagram}
 	\end{center}
   \subsection{Entities}
-\par Starting from the considerations previously exposed regarding the implementation hypotheses, we have drawn an ER diagram (\textbf{Figure 1}) which includes 5 different entities and 7 many-to-many relationships described below in the logical model: \par
-  \begin{itemize}[noitemsep]
-  \item[-]	\textbf{Person}(\underline{nconst}, PrimaryName, BirthYear, DeathYear, PrimaryProfession, KnownForTitles)
-	\item[-]	\textbf{Title}(\underline{tconst}, PrimaryTitle, OriginalTitle, TitleType, StartYear, EndYear, RuntimeMinutes, Genres)
-	\item[-]	\textbf{Episode}(\underline{tconst}, ParentTconst, SeasonNumber, EpisodeNumber)
-	\item[-]	\textbf{Ratings}(\underline{tconst}, AverageRating, NumVotes)
-	\item[-]	\textbf{Genre}(Name)
-  \end{itemize} \par
-The \textbf{Person} entity describes every possible individual with their own personal data, including their primary profession and titles they are known for. 
-The \textbf{Title} entity represents films, TV series or short films with their respective attributes. 
-The \textbf{Episode} entity is used to detail episodes of TV series, linked to their parent series. 
-The \textbf{Ratings} entity captures the average rating and number of votes for each title. 
-Finally, the \textbf{Genre} entity categorizes the titles into different genres.
-
+  \par Starting from the considerations previously exposed regarding the implementation hypotheses, we have drawn an ER diagram (\textbf{Figure 1}) which includes 5 different entities and 7 many-to-many relationships described below in the logical model: \par
+    \begin{itemize}[noitemsep]
+    \item[-]	\textbf{Customer}(\underline{customer\_id}, Name, Surname, Email, BirthDate, Address, PhoneNumber)
+    \item[-]	\textbf{Product}(\underline{product\_id}, ProductName, Description, Price, Stock, Category)
+    \item[-]	\textbf{Order}(\underline{order\_id}, CustomerID, OrderDate, TotalAmount, PaymentMethod, ShippingAddress)
+    \item[-]	\textbf{Order\_Item}(\underline{order\_id}, \underline{product\_id}, Quantity, UnitPrice)
+    \item[-]	\textbf{Review}(\underline{review\_id}, CustomerID, ProductID, Rating, Comment, ReviewDate)
+    \item[-]	\textbf{Category}(\underline{category\_id}, CategoryName)
+    \item[-]	\textbf{Payment}(\underline{payment\_id}, OrderID, PaymentDate, PaymentAmount, PaymentMethod)
+    \end{itemize} \par
+  The \textbf{Customer} entity represents the individuals who make purchases on the platform, storing essential information such as their personal details and contact information. 
+  The \textbf{Product} entity represents the items available for sale, including product details such as name, description, price, stock level, and category. 
+  The \textbf{Order} entity captures information related to a customer’s order, such as the order date, total amount, payment method, and shipping address.
+  The \textbf{Order\_Item} entity links products to specific orders, detailing the quantity of each product ordered and its unit price.
+  The \textbf{Review} entity stores customer feedback for purchased products, including ratings and comments, along with the review date.
+  The \textbf{Category} entity defines the product categories, allowing for classification of products into different types.
+  Finally, the \textbf{Payment} entity records the payment details for each order, including the payment method and the amount paid.
+  
 \subsection{Relationships}
 \begin{itemize}[noitemsep]
   
@@ -312,6 +319,59 @@ category, which in this study was chosen as the category with the most orders fo
 \subsection{Logistic Analysis for Logistics Department}
 This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
 In particular, this is done by evaluating the closest distribution center for a specific user, the status of the order, the update of the history of the orders of user and to check if the user has some order pending, in which case the items can be sent together. 
+
+\subsubsection{Closest Distribution Center}
+\begin{verbatim}
+  MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
+  WHERE u.id = "456"
+  MATCH (d:DistributionCenter)
+  WHERE d.latitude IS NOT NULL AND d.longitude IS NOT NULL
+  WITH u, d, 
+      point({latitude: u.latitude, longitude: u.longitude}) AS user_location, 
+      point({latitude: d.latitude, longitude: d.longitude}) AS distribution_center_location
+  WITH u, d, user_location, distribution_center_location, 
+      point.distance(user_location, distribution_center_location) AS distance
+  ORDER BY distance
+  LIMIT 1
+  RETURN d.name, distance;
+\end{verbatim}
+
+\begin{table}[h!]
+  \centering
+  \caption{Data for Los Angeles CA}
+  \label{tab:los_angeles_data}
+  \begin{tabular}{l r}
+      \toprule
+      \textbf{Location} & \textbf{Value} \\
+      \midrule
+      Los Angeles CA & 336,596.47 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Order Status}
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE u.id = "456"
+  WITH o ORDER BY o.created_at DESC LIMIT 1
+  RETURN o.order_id, o.status AS order_status, o.created_at;
+\end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{Data for Processing Task}
+  \label{tab:processing_data}
+  \begin{tabular}{l l l}
+      \toprule
+      \textbf{ID} & \textbf{Status} & \textbf{Timestamp} \\
+      \midrule
+      561 & Processing & 2023-12-15 17:28:00+00:00 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Order History}
+In order to provide our logistic department with the most updated information, we have to provide them with the history of the orders of a specific user.
+In particular, we have to fill the history
 
 \newpage
 \section{References \& Sources}
