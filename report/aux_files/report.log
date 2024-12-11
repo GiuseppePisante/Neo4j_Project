@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.11.22)  11 DEC 2024 18:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.11.22)  11 DEC 2024 19:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -570,6 +570,9 @@ File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
 )
 (aux_files/report.aux
 
+LaTeX Warning: Label `tab:processing_data' multiply defined.
+
+
 LaTeX Warning: Label `' multiply defined.
 
 
@@ -663,7 +666,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <14.4> on input line 39.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 39.
-<polilogo.png, id=75, 666.49pt x 489.83pt>
+<polilogo.png, id=103, 666.49pt x 489.83pt>
 File: polilogo.png Graphic file (type png)
 <use polilogo.png>
 Package pdftex.def Info: polilogo.png  used on input line 40.
@@ -762,62 +765,113 @@ sales}) AS brand_sales[]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[8] [9]
-Overfull \hbox (85.47523pt too wide) in paragraph at lines 337--337
-[]      \OT1/cmtt/m/n/12 point({latitude: u.latitude, longitude: u.longitude}) 
-AS user_location,[] 
+
+Overfull \hbox (134.87526pt too wide) in paragraph at lines 330--330
+[]    \OT1/cmtt/m/n/12 WITH u.country AS country, u.traffic_source AS traffic_s
+ource, COUNT(*) AS amount[] 
  []
 
-
-Overfull \hbox (171.92528pt too wide) in paragraph at lines 337--337
-[]      \OT1/cmtt/m/n/12 point({latitude: d.latitude, longitude: d.longitude}) 
-AS distribution_center_location[] 
+[8]
+Overfull \hbox (171.92528pt too wide) in paragraph at lines 330--330
+[]    \OT1/cmtt/m/n/12 WITH country, COLLECT({traffic_source: traffic_source, a
+mount: amount}) AS traffic_data[] 
  []
 
-
-Overfull \hbox (85.47523pt too wide) in paragraph at lines 337--337
-[]      \OT1/cmtt/m/n/12 point.distance(user_location, distribution_center_loca
-tion) AS distance[] 
+[9]
+Overfull \hbox (289.25034pt too wide) in paragraph at lines 330--330
+[]    \OT1/cmtt/m/n/12 RETURN country, traffic_data[0].traffic_source AS top_tr
+affic_source, traffic_data[0].amount AS max_amount[] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[10] [11] [12pdfTeX warning (ext4): destination with the same identifier (name{
-cite.}) has been already used, duplicate ignored
+
+Overfull \hbox (184.27528pt too wide) in paragraph at lines 373--373
+[]    \OT1/cmtt/m/n/12 MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:Ord
+erItem)-[:REFERS_TO]->(p:Product)[] 
+ []
+
+
+Overfull \hbox (23.7252pt too wide) in paragraph at lines 373--373
+[]    \OT1/cmtt/m/n/12 WITH u, o, SUM(p.cost) AS total_price, COUNT(oi) AS orde
+r_count[] 
+ []
+
+
+Overfull \hbox (165.75027pt too wide) in paragraph at lines 373--373
+[]            \OT1/cmtt/m/n/12 WHEN total_price > 30 AND order_count > 3 THEN '
+High Frequency, High Spending'[] 
+ []
+
+
+Overfull \hbox (165.75027pt too wide) in paragraph at lines 373--373
+[]            \OT1/cmtt/m/n/12 WHEN total_price <= 30 AND order_count > 3 THEN 
+'High Frequency, Low Spending'[] 
+ []
+
+
+Overfull \hbox (165.75027pt too wide) in paragraph at lines 373--373
+[]            \OT1/cmtt/m/n/12 WHEN total_price > 30 AND order_count <= 3 THEN 
+'Low Frequency, High Spending'[] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[10] [11]
+Overfull \hbox (85.47523pt too wide) in paragraph at lines 410--410
+[]      \OT1/cmtt/m/n/12 point({latitude: u.latitude, longitude: u.longitude}) 
+AS user_location,[] 
+ []
+
+
+Overfull \hbox (171.92528pt too wide) in paragraph at lines 410--410
+[]      \OT1/cmtt/m/n/12 point({latitude: d.latitude, longitude: d.longitude}) 
+AS distribution_center_location[] 
+ []
+
+
+Overfull \hbox (85.47523pt too wide) in paragraph at lines 410--410
+[]      \OT1/cmtt/m/n/12 point.distance(user_location, distribution_center_loca
+tion) AS distance[] 
+ []
+
+[12] [13] [14] [15pdfTeX warning (ext4): destination with the same identifier (
+name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier
  (name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier
  (name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier
  (name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier
  (name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier
  (name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier
  (name{cite.}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.384 \end{document}
+l.525 \end{document}
                     ] (aux_files/report.aux)
 
 LaTeX Warning: There were multiply-defined labels.
@@ -828,14 +882,14 @@ Package rerunfilecheck Warning: File `report.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `report.out':
-(rerunfilecheck)             Before: 46B8A52C35483EF9D03ED461D99E698B;3154
-(rerunfilecheck)             After:  C86EDE8FC5F704FFE0CB8F293E7CB214;3285.
+(rerunfilecheck)             Before: 7A19E30EC5985B2BAA88838E03A9CDE4;4507
+(rerunfilecheck)             After:  3648ADB993B6F37B2442AE1E1B9F2EB2;4520.
  ) 
 Here is how much of TeX's memory you used:
- 21383 strings out of 480247
- 405102 string characters out of 5896150
- 685624 words of memory out of 5000000
- 38949 multiletter control sequences out of 15000+600000
+ 21404 strings out of 480247
+ 405462 string characters out of 5896150
+ 685735 words of memory out of 5000000
+ 38958 multiletter control sequences out of 15000+600000
  475373 words of font info for 49 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,9n,89p,494b,491s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -847,10 +901,10 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmtt12.pfb>
-Output written on aux_files/report.pdf (12 pages, 207704 bytes).
+Output written on aux_files/report.pdf (15 pages, 215808 bytes).
 PDF statistics:
- 219 PDF objects out of 1000 (max. 8388607)
- 185 compressed objects within 2 object streams
- 46 named destinations out of 1000 (max. 500000)
- 154 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 272 PDF objects out of 1000 (max. 8388607)
+ 234 compressed objects within 3 object streams
+ 58 named destinations out of 1000 (max. 500000)
+ 210 words of extra memory for PDF output out of 10000 (max. 10000000)
 

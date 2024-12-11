@@ -319,8 +319,75 @@ category, which in this study was chosen as the category with the most orders fo
 
   \subsubsection{Top traffic source per Country}
   \begin{verbatim}
-
+    MATCH (u:User)
+    WHERE u.traffic_source IS NOT NULL
+    WITH u.country AS country, u.traffic_source AS traffic_source, COUNT(*) AS amount
+    WITH country, traffic_source, amount
+    ORDER BY country, amount DESC
+    WITH country, COLLECT({traffic_source: traffic_source, amount: amount}) AS traffic_data
+    RETURN country, traffic_data[0].traffic_source AS top_traffic_source, traffic_data[0].amount AS max_amount
+    ORDER BY country;
   \end{verbatim}  
+
+  \begin{table}[h!]
+    \centering
+    \caption{Search Data by Country}
+    \label{tab:search_data}
+    \begin{tabular}{l l r}
+        \toprule
+        \textbf{Country} & \textbf{Platform} & \textbf{Count} \\
+        \midrule
+        Australia       & Search & 1518 \\
+        Austria         & Facebook & 1 \\
+        Belgium         & Search & 856 \\
+        Brasil          & Search & 10147 \\
+        China           & Search & 23876 \\
+        Colombia        & Search & 9 \\
+        Deutschland     & Search & 1 \\
+        España          & Search & 2 \\
+        France          & Search & 3310 \\
+        Germany         & Search & 2921 \\
+        Japan           & Search & 1746 \\
+        Poland          & Search & 177 \\
+        South Korea     & Search & 3701 \\
+        Spain           & Search & 2845 \\
+        United Kingdom  & Search & 3197 \\
+        United States   & Search & 15768 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+  \subsubsection{Segmentation of User base}
+  \begin{verbatim}
+    MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+    WITH u, o, SUM(p.cost) AS total_price, COUNT(oi) AS order_count
+    WITH u, total_price, order_count,
+        CASE 
+            WHEN total_price > 30 AND order_count > 3 THEN 'High Frequency, High Spending'
+            WHEN total_price <= 30 AND order_count > 3 THEN 'High Frequency, Low Spending'
+            WHEN total_price > 30 AND order_count <= 3 THEN 'Low Frequency, High Spending'
+            ELSE 'Low Frequency, Low Spending'
+        END AS segment
+    RETURN segment, COUNT(u) AS user_count
+    ORDER BY user_count DESC;
+  \end{verbatim}  
+
+  \begin{table}[h!]
+    \centering
+    \caption{Customer Segments by Frequency and Spending}
+    \label{tab:customer_segments}
+    \begin{tabular}{l r}
+        \toprule
+        \textbf{Segment} & \textbf{Count} \\
+        \midrule
+        Low Frequency, Low Spending  & 67152 \\
+        Low Frequency, High Spending & 51702 \\
+        High Frequency, High Spending & 6340 \\
+        High Frequency, Low Spending & 32 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 
 \subsection{Logistic Analysis for Logistics Department}
 This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
