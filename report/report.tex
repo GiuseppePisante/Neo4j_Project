@@ -352,7 +352,7 @@ In particular, this is done by evaluating the closest distribution center for a 
 \subsubsection{Order Status}
 \begin{verbatim}
   MATCH (u:User)-[:PLACES]->(o:Order)
-  WHERE u.id = "456"
+  WHERE u.id = "10"
   WITH o ORDER BY o.created_at DESC LIMIT 1
   RETURN o.order_id, o.status AS order_status, o.created_at;
 \end{verbatim}
@@ -371,7 +371,27 @@ In particular, this is done by evaluating the closest distribution center for a 
 
 \subsubsection{Order History}
 In order to provide our logistic department with the most updated information, we have to provide them with the history of the orders of a specific user.
-In particular, we have to fill the history
+In particular, we have to fill the history node with the latest information. In order to do that, we first add the new order to order, and then we add the new order to the history of the user.
+\begin{verbatim}
+  // Add the new order to the order node
+    MATCH (u:User)
+    WHERE u.id="10"
+    WITH u
+    MATCH (o:Order)
+    WITH u, MAX(o.order_id) AS max_order_id
+    CREATE (newOrder:Order { 
+        order_id: toString(200000), 
+        status: "Processing",
+        gender: u.gender,
+        created_at: date(),
+        returned_at: null,
+        shipped_at: null,
+        delivered_at: null,
+        num_of_item: 3
+    })
+    MERGE (u)-[:PLACES]->(newOrder);
+\end{verbatim}
+
 
 \newpage
 \section{References \& Sources}
