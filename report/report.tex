@@ -323,7 +323,7 @@ In particular, this is done by evaluating the closest distribution center for a 
 \subsubsection{Closest Distribution Center}
 \begin{verbatim}
   MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
-  WHERE u.id = "456"
+  WHERE u.id = "100"
   MATCH (d:DistributionCenter)
   WHERE d.latitude IS NOT NULL AND d.longitude IS NOT NULL
   WITH u, d, 
@@ -344,27 +344,7 @@ In particular, this is done by evaluating the closest distribution center for a 
       \toprule
       \textbf{Location} & \textbf{Value} \\
       \midrule
-      Los Angeles CA & 336,596.47 \\
-      \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsubsection{Order Status}
-\begin{verbatim}
-  MATCH (u:User)-[:PLACES]->(o:Order)
-  WHERE u.id = "10"
-  WITH o ORDER BY o.created_at DESC LIMIT 1
-  RETURN o.order_id, o.status AS order_status, o.created_at;
-\end{verbatim}
-\begin{table}[h!]
-  \centering
-  \caption{Data for Processing Task}
-  \label{tab:processing_data}
-  \begin{tabular}{l l l}
-      \toprule
-      \textbf{ID} & \textbf{Status} & \textbf{Timestamp} \\
-      \midrule
-      561 & Processing & 2023-12-15 17:28:00+00:00 \\
+      Los Angeles CA & 10539304.46257035 \\
       \bottomrule
   \end{tabular}
 \end{table}
@@ -375,7 +355,7 @@ In particular, we have to fill the history node with the latest information. In 
 \begin{verbatim}
   // Add the new order to the order node
     MATCH (u:User)
-    WHERE u.id="10"
+    WHERE u.id="100"
     WITH u
     MATCH (o:Order)
     WITH u, MAX(o.order_id) AS max_order_id
@@ -392,6 +372,25 @@ In particular, we have to fill the history node with the latest information. In 
     MERGE (u)-[:PLACES]->(newOrder);
 \end{verbatim}
 
+\subsubsection{Order Status}
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE u.id = "100"
+  WITH o ORDER BY o.created_at DESC LIMIT 1
+  RETURN o.order_id, o.status AS order_status, o.created_at;
+\end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{Data for Processing Task}
+  \label{tab:processing_data}
+  \begin{tabular}{l l l}
+      \toprule
+      \textbf{ID} & \textbf{Status} & \textbf{Timestamp} \\
+      \midrule
+      561 & Processing & 2023-12-15 17:28:00+00:00 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
 
 \newpage
 \section{References \& Sources}
