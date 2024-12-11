@@ -7,6 +7,7 @@
 \usepackage{color} 
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{booktabs}
 \usepackage[font=small,labelfont=bf]{caption}
 \hypersetup{
     colorlinks,
@@ -106,199 +107,68 @@ Finally, the \textbf{Genre} entity categorizes the titles into different genres.
 
 
 \subsection{Constraints:}
-\begin{itemize}[noitemsep]
-   \item \textbf{Unique Constraints:}
-   \begin{itemize}
-       \item \lstinline\texttt{CREATE CONSTRAINT FOR (p:Person) REQUIRE p.nconst IS UNIQUE}
-      %  \item \texttt{CREATE CONSTRAINT FOR (t:Title) REQUIRE t.tconst IS UNIQUE}
-      %  \item \texttt{CREATE CONSTRAINT FOR (e:Episode) REQUIRE (e.tconst, e.ParentTconst,}
-      %   \texttt{e.SeasonNumber, e.EpisodeNumber) IS UNIQUE}
-      %  \item \texttt{CREATE CONSTRAINT FOR (r:Ratings) REQUIRE r.tconst IS UNIQUE}
-      %  \item \texttt{CREATE CONSTRAINT FOR (g:Genre) REQUIRE g.Name IS UNIQUE}
-   \end{itemize}
-   
-   \item \textbf{Foreign Key Constraints:}
-   \begin{itemize}
-       \item \lstinline\texttt{CREATE CONSTRAINT FOR (e:Episode)-[:PART_OF]->(t:Title)}
-      %  \texttt{REQUIRE e.ParentTconst = t.tconst}
-      %  \item \texttt{CREATE CONSTRAINT FOR (r:Ratings)-[:RATED]->(t:Title) REQUIRE r.tconst = t.tconst}
-      %  \item \texttt{CREATE CONSTRAINT FOR (a:ACTED_IN)-[:ACTED_IN]->(p:Person, t:Title)}
-      %  \texttt{REQUIRE a.Person = p.nconst AND a.Title = t.tconst}
-      %  \item \texttt{CREATE CONSTRAINT FOR (d:DIRECTED)-[:DIRECTED]->(p:Person, t:Title)}
-      %  \texttt{REQUIRE d.Person = p.nconst AND d.Title = t.tconst}
-      %  \item \texttt{CREATE CONSTRAINT FOR (w:WROTE)-[:WROTE]->(p:Person, t:Title)}
-      %  \texttt{REQUIRE w.Person = p.nconst AND w.Title = t.tconst}
-      %  \item \texttt{CREATE CONSTRAINT FOR (e:Episode)-[:PART_OF]->(t:Title)}
-      %  \texttt{REQUIRE e.ParentTconst = t.tconst}
-      %  \item \texttt{CREATE CONSTRAINT FOR (h:HAS_GENRE)-[:HAS_GENRE]->(t:Title, g:Genre)}
-      %  \texttt{REQUIRE h.Title = t.tconst AND h.Genre = g.Name}
-   \end{itemize}
-   
-   \item \textbf{Other Constraints:}
-   \begin{itemize}
-      %  \item \texttt{CREATE CONSTRAINT FOR (t:Title) REQUIRE t.StartYear <= t.EndYear}
-      %  \item \texttt{CREATE CONSTRAINT FOR (e:Episode) REQUIRE e.SeasonNumber > 0 AND e.EpisodeNumber > 0}
-      %  \item \texttt{CREATE CONSTRAINT FOR (r:Ratings) REQUIRE r.AverageRating >= 0 AND r.AverageRating <= 10}
-      %  \item \texttt{CREATE CONSTRAINT FOR (r:Ratings) REQUIRE r.NumVotes >= 0}
-   \end{itemize}
-\end{itemize}
+ciao
 
 % \section{Import database}
 % ciao
 \section{Cypher Queries}
-\subsection{Trova tutti gli attori che hanno lavorato in un titolo con un determinato genere}
+\subsection{DistributionCenter closest to each User}
 \begin{verbatim}
-MATCH (p:Person)-[:ACTED_IN]->(t:Title)-[:HAS_GENRE]->(g:Genre)
-WHERE g.Name = 'Drama'
-RETURN p.PrimaryName, t.PrimaryTitle
+  MATCH (u:User), (d:DistributionCenter)
+  WITH u, d, distance(point({latitude: u.latitude, longitude: u.longitude}),
+                      point({latitude: d.latitude, longitude: d.longitude})) AS dist
+  RETURN u.id AS user_id, d.name AS nearest_center, dist
+  ORDER BY dist ASC
+  LIMIT 10;
 \end{verbatim}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{lll}
+  \toprule
+  \textbf{user\_id} & \textbf{nearest\_center} & \textbf{dist} \\ 
+  \midrule
+  58210 & Chicago IL & 1759.9113 \\ 
+  48442 & Chicago IL & 1759.9113 \\ 
+  20571 & Chicago IL & 1759.9113 \\ 
+  37767 & Philadelphia PA & 1897.4164 \\ 
+  7543  & Philadelphia PA & 1897.4164 \\ 
+  41572 & Philadelphia PA & 1897.4164 \\ 
+  \bottomrule
+  \end{tabular}
+  \caption{Output della query Neo4j.}
+  \label{tab:query_output}
+  \end{table}
 
-\subsection{Identifica i registi che hanno diretto il maggior numero di titoli}
-\begin{verbatim}
-MATCH (p:Person)-[:DIRECTED]->(t:Title)
-RETURN p.PrimaryName, COUNT(t) AS TitlesDirected
-ORDER BY TitlesDirected DESC
-LIMIT 10
-\end{verbatim}
+  \subsection{Most sold products:}
+  \begin{verbatim}  
+    MATCH (:OrderItem)-[:REFERS_TO]->(p:Product)
+    RETURN p.name AS product_name, count(*) AS sales_count
+    ORDER BY sales_count DESC
+    LIMIT 10;
+  \end{verbatim}
+  \begin{table}[h!]
+    \centering
+    \begin{tabular}{p{8cm}r} % Colonna larga per i nomi e destra per i numeri
+    \toprule
+    \textbf{Product Name} & \textbf{Quantity} \\ 
+    \midrule
+    Wrangler Men's Premium Performance Cowboy Cut Jean & 62 \\
+    Puma Men's Socks & 48 \\
+    7 For All Mankind Men's Standard Classic Straight Leg Jean & 41 \\
+    True Religion Men's Ricky Straight Jean & 37 \\
+    Kenneth Cole Men's Straight Leg Jean & 36 \\
+    Michael Kors Men's 3 Pack Brief & 33 \\
+    HUGO BOSS Men's Long Pant & 31 \\
+    Lucky Brand Mens Men's 361 Vintage Straight Denim Jean & 31 \\
+    Thorlo Unisex Experia Running Sock & 31 \\
+    Diesel Men's Shioner Skinny Straight Leg Jean & 31 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Top-selling men's clothing products and their quantities.}
+    \label{tab:top_selling_products}
+    \end{table}
 
-\subsection{Trova tutti i titoli con una valutazione superiore a 8 e con più di 10.000 voti}
-\begin{verbatim}
-MATCH (t:Title)-[:HAS_RATING]->(r:Ratings)
-WHERE r.AverageRating > 8 AND r.NumVotes > 10000
-RETURN t.PrimaryTitle, r.AverageRating, r.NumVotes
-ORDER BY r.AverageRating DESC
-\end{verbatim}
 
-\subsection{Elenca tutti i generi di un titolo specifico}
-\begin{verbatim}
-MATCH (t:Title)-[:HAS_GENRE]->(g:Genre)
-WHERE t.PrimaryTitle = 'Inception'
-RETURN g.Name
-\end{verbatim}
-
-\subsection{Trova i migliori titoli per ogni genere}
-\begin{verbatim}
-MATCH (t:Title)-[:HAS_GENRE]->(g:Genre), (t)-[:HAS_RATING]->(r:Ratings)
-WITH g.Name AS Genre, t.PrimaryTitle AS Title, r.AverageRating AS Rating
-ORDER BY Genre, Rating DESC
-RETURN Genre, Title, Rating
-\end{verbatim}
-
-\subsection{Esplora gli attori che hanno lavorato frequentemente con lo stesso regista}
-\begin{verbatim}
-MATCH (d:Person)-[:DIRECTED]->(t:Title)<-[:ACTED_IN]-(a:Person)
-RETURN d.PrimaryName AS Director, a.PrimaryName AS Actor, COUNT(t) AS Collaborations
-ORDER BY Collaborations DESC
-LIMIT 10
-\end{verbatim}
-
-\subsection{Trova tutti gli episodi di una determinata serie TV}
-\begin{verbatim}
-MATCH (e:Episode)-[:PART_OF]->(t:Title)
-WHERE t.PrimaryTitle = 'Breaking Bad'
-RETURN e.SeasonNumber, e.EpisodeNumber, e.tconst
-ORDER BY e.SeasonNumber, e.EpisodeNumber
-\end{verbatim}
-
-\subsection{Determina il titolo con il maggior numero di episodi}
-\begin{verbatim}
-MATCH (e:Episode)-[:PART_OF]->(t:Title)
-RETURN t.PrimaryTitle, COUNT(e) AS EpisodeCount
-ORDER BY EpisodeCount DESC
-LIMIT 1
-\end{verbatim}
-
-\subsection{Trova tutte le serie TV con una durata media di episodio maggiore di 50 minuti}
-\begin{verbatim}
-MATCH (e:Episode)-[:PART_OF]->(t:Title)
-WHERE t.TitleType = 'tvSeries' AND t.RuntimeMinutes > 50
-RETURN t.PrimaryTitle, t.RuntimeMinutes
-\end{verbatim}
-
-\subsection{Identifica gli attori più prolifici}
-\begin{verbatim}
-MATCH (p:Person)-[:ACTED_IN]->(t:Title)
-RETURN p.PrimaryName, COUNT(t) AS NumberOfTitles
-ORDER BY NumberOfTitles DESC
-LIMIT 10
-\end{verbatim}
-
-\subsection{Trova i titoli diretti, scritti e recitati dalla stessa persona}
-\begin{verbatim}
-MATCH (p:Person)-[:DIRECTED]->(t:Title)<-[:WROTE]-(p)-[:ACTED_IN]->(t)
-RETURN p.PrimaryName, t.PrimaryTitle
-\end{verbatim}
-
-\subsection{Trova i titoli senza rating}
-\begin{verbatim}
-MATCH (t:Title)
-WHERE NOT (t)-[:HAS_RATING]->()
-RETURN t.PrimaryTitle
-\end{verbatim}
-
-\subsection{Analizza la distribuzione dei generi per ogni attore}
-\begin{verbatim}
-MATCH (p:Person)-[:ACTED_IN]->(t:Title)-[:HAS_GENRE]->(g:Genre)
-RETURN p.PrimaryName, g.Name, COUNT(t) AS NumberOfTitles
-ORDER BY p.PrimaryName, NumberOfTitles DESC
-\end{verbatim}
-
-\subsection{Trova i registi che lavorano in più generi}
-\begin{verbatim}
-MATCH (p:Person)-[:DIRECTED]->(t:Title)-[:HAS_GENRE]->(g:Genre)
-RETURN p.PrimaryName, COLLECT(DISTINCT g.Name) AS Genres, COUNT(g) AS TotalGenres
-ORDER BY TotalGenres DESC
-\end{verbatim}
-
-\subsection{Trova i titoli con la durata massima}
-\begin{verbatim}
-MATCH (t:Title)
-WHERE t.RuntimeMinutes IS NOT NULL
-RETURN t.PrimaryTitle, t.RuntimeMinutes
-ORDER BY t.RuntimeMinutes DESC
-LIMIT 10
-\end{verbatim}
-
-\subsection{Identifica gli attori più votati}
-\begin{verbatim}
-MATCH (p:Person)-[:ACTED_IN]->(t:Title)-[:HAS_RATING]->(r:Ratings)
-RETURN p.PrimaryName, SUM(r.NumVotes) AS TotalVotes
-ORDER BY TotalVotes DESC
-LIMIT 10
-\end{verbatim}
-
-\subsection{Trova gli episodi con la migliore valutazione di una serie specifica}
-\begin{verbatim}
-MATCH (e:Episode)-[:PART_OF]->(t:Title)-[:HAS_RATING]->(r:Ratings)
-WHERE t.PrimaryTitle = 'The Office'
-RETURN e.SeasonNumber, e.EpisodeNumber, r.AverageRating
-ORDER BY r.AverageRating DESC
-\end{verbatim}
-
-\subsection{Trova tutte le persone che hanno collaborato in almeno 5 titoli}
-\begin{verbatim}
-MATCH (p:Person)-[:ACTED_IN|DIRECTED|WROTE]->(t:Title)
-WITH p, COUNT(DISTINCT t) AS CollaborationCount
-WHERE CollaborationCount >= 5
-RETURN p.PrimaryName, CollaborationCount
-\end{verbatim}
-
-\subsection{Trova le serie TV più popolari (somma dei voti degli episodi)}
-\begin{verbatim}
-MATCH (e:Episode)-[:PART_OF]->(t:Title)-[:HAS_RATING]->(r:Ratings)
-WHERE t.TitleType = 'tvSeries'
-RETURN t.PrimaryTitle, SUM(r.NumVotes) AS TotalVotes
-ORDER BY TotalVotes DESC
-LIMIT 10
-\end{verbatim}
-
-\subsection{Analizza i registi più votati per i loro titoli}
-\begin{verbatim}
-MATCH (p:Person)-[:DIRECTED]->(t:Title)-[:HAS_RATING]->(r:Ratings)
-RETURN p.PrimaryName, SUM(r.NumVotes) AS TotalVotes, AVG(r.AverageRating) AS AvgRating
-ORDER BY TotalVotes DESC
-LIMIT 10
-\end{verbatim}
 
 
 
