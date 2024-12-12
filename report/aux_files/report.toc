@@ -17,12 +17,18 @@
 \contentsline {subsubsection}{\numberline {4.1.5}Most present brands within the intimates category}{7}{subsubsection.4.1.5}%
 \contentsline {subsubsection}{\numberline {4.1.6}Most present brands within the intimates category per country}{8}{subsubsection.4.1.6}%
 \contentsline {subsubsection}{\numberline {4.1.7}Top traffic source per Country}{8}{subsubsection.4.1.7}%
-\contentsline {subsection}{\numberline {4.2}Segmentation of User base}{10}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Logistic Analysis for Logistics Department}{11}{subsection.4.3}%
-\contentsline {subsubsection}{\numberline {4.3.1}Closest Distribution Center}{12}{subsubsection.4.3.1}%
-\contentsline {subsubsection}{\numberline {4.3.2}Order History}{12}{subsubsection.4.3.2}%
-\contentsline {subsubsection}{\numberline {4.3.3}Number of orders pending}{13}{subsubsection.4.3.3}%
-\contentsline {subsubsection}{\numberline {4.3.4}Management of multiple orders}{13}{subsubsection.4.3.4}%
-\contentsline {subsubsection}{\numberline {4.3.5}set shipping date or delivered date}{13}{subsubsection.4.3.5}%
-\contentsline {subsubsection}{\numberline {4.3.6}Order Status}{14}{subsubsection.4.3.6}%
-\contentsline {section}{\numberline {5}References \& Sources}{15}{section.5}%
+\contentsline {subsubsection}{\numberline {4.1.8}Segmentation of User base}{10}{subsubsection.4.1.8}%
+\contentsline {subsubsection}{\numberline {4.1.9}Best and Worst Selling Product Categories by Season}{11}{subsubsection.4.1.9}%
+\contentsline {subsection}{\numberline {4.2}Logistic Analysis for Logistics Department}{12}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Closest Distribution Center}{13}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Order History}{13}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Number of orders pending}{14}{subsubsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.4}Management of multiple orders}{14}{subsubsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.5}set shipping date or delivered date}{15}{subsubsection.4.2.5}%
+\contentsline {subsubsection}{\numberline {4.2.6}Order Status}{15}{subsubsection.4.2.6}%
+\contentsline {subsubsection}{\numberline {4.2.7}Cross-Sell Opportunity}{15}{subsubsection.4.2.7}%
+\contentsline {subsubsection}{\numberline {4.2.8}Average Shipping Time by Country}{15}{subsubsection.4.2.8}%
+\contentsline {subsection}{\numberline {4.3}Customer Segmentation Analysis}{16}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Age-based Segmentation}{16}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Top Product Categories Purchased by Gender in the Selected Segment}{18}{subsubsection.4.3.2}%
+\contentsline {section}{\numberline {5}References \& Sources}{19}{section.5}%

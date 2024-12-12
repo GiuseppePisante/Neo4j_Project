@@ -388,6 +388,56 @@ category, which in this study was chosen as the category with the most orders fo
     \end{tabular}
 \end{table}
 
+\subsubsection{Best and Worst Selling Product Categories by Season}
+This query analyzes the purchasing patterns of product categories by season. For each season (Winter, Spring, Summer, and Fall),
+it identifies the most frequently purchased category (best-selling) and the least frequently purchased category (worst-selling).
+The results are based on the frequency of orders containing products from each category, with the categories being ranked by the total number of purchases in each season.
+\begin{verbatim}
+    MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+    WITH p.category AS product_category, 
+      CASE 
+          WHEN toInteger(substring(o.created_at, 5, 2)) IN [12, 1, 2] THEN 'Winter'
+          WHEN toInteger(substring(o.created_at, 5, 2)) IN [3, 4, 5] THEN 'Spring'
+          WHEN toInteger(substring(o.created_at, 5, 2)) IN [6, 7, 8] THEN 'Summer'
+          WHEN toInteger(substring(o.created_at, 5, 2)) IN [9, 10, 11] THEN 'Fall'
+      END AS season, 
+      COUNT(*) AS frequency
+    WITH season, product_category, frequency
+    ORDER BY season, frequency DESC
+    WITH season, collect({category: product_category, freq: frequency}) AS categories
+    RETURN season, categories[0] AS top_category, categories[-1] AS worst_category;
+\end{verbatim}  
+
+\begin{table}[h!]
+  \centering
+  \caption{Customer Segments by Frequency and Spending}
+  \label{tab:customer_segments}
+  \begin{tabular}{l l l}
+      \toprule
+      \textbf{Season} & \textbf{TopCategory} & \textbf{WorstCategory}\\
+      \midrule
+      "Fall" & {"category": "Intimates","freq": 3854} & {"category": "Clothing Sets","freq": 63} \\
+      "Spring" & {"category": "Intimates", "freq": 2543} & {"category": "Clothing Sets", "freq": 36} \\
+      "Summer" & {"category": "Intimates", "freq": 3078} & {"category": "Clothing Sets", "freq": 52} \\
+      "Winter" & {"category": "Intimates", "freq": 3999} & {"category": "Clothing Sets", "freq": 62} \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+The result we obtain may seem strange since in all the seasons the top and worst categories are the same, so we checked the correctness of the result with the following query, which computes the frequency of every category in each season:
+\begin{verbatim}
+MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+WITH p.category AS product_category, 
+     CASE 
+         WHEN toInteger(substring(o.created_at, 5, 2)) IN [12, 1, 2] THEN 'Winter'
+         WHEN toInteger(substring(o.created_at, 5, 2)) IN [3, 4, 5] THEN 'Spring'
+         WHEN toInteger(substring(o.created_at, 5, 2)) IN [6, 7, 8] THEN 'Summer'
+         WHEN toInteger(substring(o.created_at, 5, 2)) IN [9, 10, 11] THEN 'Fall'
+     END AS season, 
+     COUNT(*) AS frequency
+RETURN product_category, season, frequency
+ORDER BY frequency DESC;
+\end{verbatim}
+
 
 \subsection{Logistic Analysis for Logistics Department}
 This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
@@ -509,6 +559,152 @@ This can be implemented for the delivery date by switching the attribute \textbf
       \bottomrule
   \end{tabular}
 \end{table}
+
+\subsubsection{Cross-Sell Opportunity}
+\begin{verbatim}
+  MATCH (oi1:OrderItem)-[:REFERS_TO]->(p1:Product),
+      (oi2:OrderItem)-[:REFERS_TO]->(p2:Product)
+  WHERE oi1.order_id = oi2.order_id AND p1.id < p2.id  
+  WITH p1.id AS product1_id, p2.id AS product2_id, oi1.order_id AS order_id
+  WITH product1_id, product2_id, COUNT(DISTINCT order_id) AS frequency
+  RETURN product1_id, product2_id, frequency
+  ORDER BY frequency DESC
+  LIMIT 10;
+\end{verbatim}
+
+!!!! TODO: ADD TABLE WITH RESULTS
+
+\subsubsection{Average Shipping Time by Country}
+This query computes the average shipping time for each country.
+In particular it checks if the order has been delivered and created in the same month, and then calculates the difference in days between the two dates.
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE o.delivered_at IS NOT NULL AND o.created_at IS NOT NULL
+    AND toInteger(substring(o.delivered_at, 5, 2)) = toInteger(substring(o.created_at, 5, 2))
+  WITH u.country AS country, AVG(toInteger(substring(o.delivered_at, 8, 2)) - toInteger(substring(o.created_at, 8, 2))) AS
+      avg_shipping_time
+  RETURN country, avg_shipping_time
+  ORDER BY avg_shipping_time DESC;
+\end{verbatim}
+
+\begin{table}[h!]
+  \centering
+  \caption{Data for Processing Task}
+  \label{tab:processing_data}
+  \begin{tabular}{l r}
+      \toprule
+      \textbf{Country} & \textbf{AvgShippingTime} \\
+      \midrule
+      "Austria" &	6.0\\
+      "Colombia" & 4.857142857142857 \\
+      "Japan" & 3.9200000000000004 \\
+      "France" & 3.845439650464229 \\
+      "Spain" & 3.8244325767690226 \\
+      "Brasil" & 3.8161648177496104 \\
+      "Germany" & 3.8119062697910056 \\
+      "Belgium" & 3.805104408352669 \\
+      "United States" & 3.797328420082921 \\
+      "China" & 3.7945538906214358 \\
+      "South Korea" & 3.794032723772863 \\
+      "United Kingdom" & 3.7925840092699894 \\
+      "Australia" & 3.779141104294479 \\
+      "Poland" & 3.670103092783506 \\
+      "España" & 2.0 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Customer Segmentation Analysis}
+This section of the Cypher Queries aims at providing the Marketing department with more deep insights on the habits of a specific segment of users,
+in particular we are going to perform an age-based segmentation of the users, and then we are going to focus on the biggest segment.
+
+\subsubsection{Age-based Segmentation}
+This query segments users based on their age into the following groups: 18-24, 25-34, 35-44, 45-54, 55-64, and 65+.
+It then calculates the total number of users, total amount spent, and average amount spent per user for each age group and returns the results in ascending order of age group.
+Analysing the results we can see that the values of the average amount spent per user are quite similar across all age groups, so we should rely on the total amount spent to identify the most valuable segments, which is going to be the 65+ group.
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+  WITH u, 
+      CASE 
+          WHEN u.age >= 18 AND u.age <= 24 THEN '18-24'
+          WHEN u.age >= 25 AND u.age <= 34 THEN '25-34'
+          WHEN u.age >= 35 AND u.age <= 44 THEN '35-44'
+          WHEN u.age >= 45 AND u.age <= 54 THEN '45-54'
+          WHEN u.age >= 55 AND u.age <= 64 THEN '55-64'
+          ELSE '65+'
+      END AS age_group, 
+      p.cost AS product_price
+  WITH age_group, COUNT(DISTINCT u) AS user_count, SUM(product_price) AS total_spent
+  WITH age_group, user_count, total_spent, 
+      CASE 
+          WHEN user_count > 0 THEN total_spent / user_count
+          ELSE 0
+      END AS avg_spent_per_user
+  RETURN age_group, user_count, total_spent, avg_spent_per_user
+  ORDER BY age_group;
+\end{verbatim}
+
+\begin{table}[h!]
+  \centering
+  \caption{Customer Segmentation}
+  \label{tab:processing_data}
+  \begin{tabular}{l l l l}
+      \toprule
+      \textbf{AgeGroup} & \textbf{UserCount} & \textbf{TotalSpent} & \textbf{AvgSpentPerUser}\\
+      \midrule
+      "18-24" & 9505 & 616204.0050523246 & 64.82945871144919 \\
+      "45-54" & 13507 & 876656.9810595925 & 64.903900278344 \\
+      "35-44" & 13654 & 879153.417123852 & 64.38797547413593 \\
+      "25-34" & 13486 & 882255.4374447308 & 65.42009768980652 \\
+      "55-64" & 13630 & 896658.8652415214 & 65.78568343664867 \\
+      "65+" & 16262 & 1057426.51384831 & 65.02438284640942 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Top Product Categories Purchased by Gender in the Selected Segment}
+This query identifies the top 5 product categories with the highest purchase frequency for each gender (male and female) for the users belonging to the 65+ age group.
+This analysis can provide insights into the preferences and behaviors of the older demographic, helping tailor marketing strategies to better target this segment.
+
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+  WHERE u.age >= 65
+  WITH u.gender AS gender, p.category AS product_category, COUNT(*) AS frequency
+  // Raggruppa per genere e categoria di prodotto
+  WITH gender, product_category, frequency
+  ORDER BY frequency DESC
+  // Limita il numero di risultati per ciascun gruppo
+  WITH gender, COLLECT({category: product_category, frequency: frequency}) AS categories
+  WITH gender, categories[0..5] AS top_categories
+  UNWIND top_categories AS top_category
+  RETURN gender, top_category.category AS product_category, top_category.frequency AS frequency
+  ORDER BY gender, frequency DESC;
+\end{verbatim}
+
+\begin{table}[h!]
+  \centering
+  \caption{Top 5 Product Categories per Gender}
+  \label{tab:processing_data}
+  \begin{tabular}{l l l}
+      \toprule
+      \textbf{Gender} & \textbf{ProductCategory} & \textbf{Frequency} \\
+      \midrule
+      "F"	& "Intimates" &	1349\\
+      "F" & "Swim" & 544 \\
+      "F" & "Dresses" & 539 \\
+      "F" & "Fashion Hoodies \& Sweatshirts" & 536 \\
+      "F" & "Maternity" & 524 \\
+      "M" & "Underwear" & 786 \\
+      "M" & "Tops \& Tees" & 773 \\
+      "M" & "Jeans" & 771 \\
+      "M" & "Pants" & 726 \\
+      "M" & "Fashion Hoodies \& Sweatshirts" & 692 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
 
 \newpage
 \section{References \& Sources}
