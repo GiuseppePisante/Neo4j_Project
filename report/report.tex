@@ -43,9 +43,12 @@
 \tableofcontents
 \newpage
 \section{Introduction}
-\paragraph{} The project aims to design and implement a database system to manage and analyze data related to an e-commerce platform. The database will include entities such as Customer, Product, Order, Category, and Payment. The goal is to create an efficient system that can store and query information about customer purchases, product details, and transactions, providing valuable insights into user behavior, sales trends, and inventory management.
+\paragraph{} This project developes a comprehensive overview of an open source ecommerce dataset, through the use of the Neo4j technology, which is very well suited for this type of database.
 \\
-The project will be developed using a relational database management system (RDBMS), which will facilitate structured querying of data to support key functions like product recommendations, customer segmentation, sales analysis, and inventory forecasting. The system will allow for tracking of customer purchase history, order details, product categories, payment methods, and discounts, helping businesses optimize their operations and enhance the customer experience.
+In particular, in order to fully exploit such technology, our study was developed using a relational database management system (RDBMS), which facilitates the querying of data to support the Marketing and Supply Chain division with key functions like product recommendations, customer segmentation, sales analysis, and inventory forecasting. 
+The system allows for tracking of customer purchase history, order details, product categories, payment methods, and discounts, helping businesses optimize their operations and enhance the customer experience.
+
+\newpage
 \section{Assumptions}
 \paragraph{} The project is based on the following assumptions:
 \begin{itemize}[noitemsep]
@@ -62,65 +65,205 @@ The project will be developed using a relational database management system (RDB
 \end{itemize}
 
 \clearpage
-\section{ER diagram}
+\section{Dataset}
 \paragraph{}
 	\begin{center}
  		\includegraphics[width = 15 cm]{polilogo.png}
 		\captionof{figure}{E-R Diagram}
 	\end{center}
   \subsection{Entities}
-  \par Starting from the considerations previously exposed regarding the implementation hypotheses, we have drawn an ER diagram (\textbf{Figure 1}) which includes 5 different entities and 7 many-to-many relationships described below in the logical model: \par
+    \par Starting from the considerations previously exposed regarding the implementation hypotheses, we have drawn an ER diagram (\textbf{Figure 1}) which includes 8 different entities and 8 many-to-many relationships described below in the logical model: \par
     \begin{itemize}[noitemsep]
-    \item[-]	\textbf{Customer}(\underline{customer\_id}, Name, Surname, Email, BirthDate, Address, PhoneNumber)
-    \item[-]	\textbf{Product}(\underline{product\_id}, ProductName, Description, Price, Stock, Category)
-    \item[-]	\textbf{Order}(\underline{order\_id}, CustomerID, OrderDate, TotalAmount, PaymentMethod, ShippingAddress)
+    \item[-]	\textbf{User}(\underline{user\_id}, Name, Email, Address, PhoneNumber, DateOfBirth)
+    \item[-]	\textbf{Product}(\underline{product\_id}, ProductName, Description, Price, StockLevel, Category)
+    \item[-]	\textbf{Order}(\underline{order\_id}, \underline{user\_id}, OrderDate, TotalAmount, PaymentMethod, ShippingAddress)
     \item[-]	\textbf{Order\_Item}(\underline{order\_id}, \underline{product\_id}, Quantity, UnitPrice)
-    \item[-]	\textbf{Review}(\underline{review\_id}, CustomerID, ProductID, Rating, Comment, ReviewDate)
+    \item[-]	\textbf{Payment}(\underline{payment\_id}, \underline{order\_id}, PaymentDate, PaymentAmount, PaymentMethod)
+    \item[-]	\textbf{Review}(\underline{review\_id}, \underline{user\_id}, \underline{product\_id}, Rating, Comment, ReviewDate)
     \item[-]	\textbf{Category}(\underline{category\_id}, CategoryName)
-    \item[-]	\textbf{Payment}(\underline{payment\_id}, OrderID, PaymentDate, PaymentAmount, PaymentMethod)
+    \item[-]	\textbf{Distribution\_Center}(\underline{center\_id}, CenterName, Location)
     \end{itemize} \par
-  The \textbf{Customer} entity represents the individuals who make purchases on the platform, storing essential information such as their personal details and contact information. 
-  The \textbf{Product} entity represents the items available for sale, including product details such as name, description, price, stock level, and category. 
-  The \textbf{Order} entity captures information related to a customer’s order, such as the order date, total amount, payment method, and shipping address.
-  The \textbf{Order\_Item} entity links products to specific orders, detailing the quantity of each product ordered and its unit price.
-  The \textbf{Review} entity stores customer feedback for purchased products, including ratings and comments, along with the review date.
-  The \textbf{Category} entity defines the product categories, allowing for classification of products into different types.
-  Finally, the \textbf{Payment} entity records the payment details for each order, including the payment method and the amount paid.
-  
-\subsection{Relationships}
-\begin{itemize}[noitemsep]
-  
-    \item[\textbf{ACTED\_IN}] $(Person)-[:ACTED\_IN]->(Title)$
-    
-    Relationship between a Person, whose primary profession is actor, and a Title.
-    \item[\textbf{DIRECTED}] $(Person)-[:DIRECTED]->(Title)$
-    
-    Relationship between a Person, whose primary profession is director, and a Title.
-    \item[\textbf{WROTE}] $(Person)-[:WROTE]->(Title)$
-    
-    Relationship between a Person, whose primary profession is writer, and a Title.
-    \item[\textbf{PART\_OF}] $(Episode)-[:PART\_OF]->(Title)$
-    
-    Relationship between an Episode and its parent Title, whose TitleType is TV series.
-    \item[\textbf{HAS\_GENRE}] $(Title)-[:HAS\_GENRE]->(Genre)$
-    
-    Relationship between a Title and a Genre.
-    \item[\textbf{HAS\_RATING}] $(Title)-[:HAS\_RATING]->(Rating)$
-    
-    Relationship between a Title and its Rating.
 
+    The \textbf{User} entity represents the individuals who make purchases on the platform, storing essential information such as their personal details and contact information.
+
+    The \textbf{Product} entity represents the items available for sale, including product details such as name, description, price, stock level, and category.
+
+    The \textbf{Order} entity captures information related to a user’s order, such as the order date, total amount, payment method, and shipping address.
+
+    The \textbf{Order\_Item} entity links products to specific orders, detailing the quantity of each product ordered and its unit price.
+
+    The \textbf{Payment} entity records the payment details for each order, including the payment method, amount paid, and the date of payment.
+
+    The \textbf{Review} entity stores customer feedback for purchased products, including ratings and comments, along with the review date.
+
+    The \textbf{Category} entity defines the product categories, allowing for classification of products into different types (e.g., electronics, clothing).
+
+    Finally, the \textbf{Distribution\_Center} entity represents the centers from which the products are shipped, capturing details such as center name and location.
+
+    \subsection{Relationships}
+    \begin{itemize}[noitemsep]
+      
+        \item[\textbf{User}] $(User)-[:PLACED]->(Order)$
+        
+        Relationship between a User and an Order, where a user can place multiple orders, and each order is linked to one user.
+        
+        \item[\textbf{Order}] $(Order)-[:CONTAINS]->(Order\_Item)$
+        
+        Relationship between an Order and the Order\_Item, where an order can contain multiple items, and each order item is linked to one order.
+        
+        \item[\textbf{Product}] $(Product)-[:PART\_OF]->(Order\_Item)$
+        
+        Relationship between a Product and the Order\_Item, where a product can appear in multiple order items, and each order item corresponds to a specific product.
+        
+        \item[\textbf{User}] $(User)-[:WRITES]->(Review)$
+        
+        Relationship between a User and a Review, where a user can write multiple reviews, and each review is written by one user.
+        
+        \item[\textbf{Product}] $(Product)-[:HAS\_REVIEW]->(Review)$
+        
+        Relationship between a Product and a Review, where a product can have multiple reviews, and each review is linked to one product.
+        
+        \item[\textbf{Order}] $(Order)-[:PAID\_BY]->(Payment)$
+        
+        Relationship between an Order and a Payment, where an order can have one or more payments, and each payment corresponds to one order.
+        
+        \item[\textbf{Order}] $(Order)-[:SHIPPED\_FROM]->(Distribution\_Center)$
+        
+        Relationship between an Order and a Distribution\_Center, where an order is processed by a single distribution center, and each distribution center can process multiple orders.
+        
+        \item[\textbf{Product}] $(Product)-[:BELONGS\_TO]->(Category)$
+        
+        Relationship between a Product and a Category, where a product can belong to one or more categories, and each category can contain multiple products.
+        
+    \end{itemize}
     
-\end{itemize}
 
 
 \subsection{Constraints:}
-Ciao
+\par Based on the implementation assumptions and the entities defined above, we introduce several constraints to ensure the integrity and consistency of the data in the database. These constraints are applied to guarantee that each entity has a unique identifier and to prevent the creation of duplicate entries within the database.
+
+\par Specifically, the following constraints are defined:
+
+\begin{verbatim}
+CREATE CONSTRAINT FOR (d:DistributionCenter) REQUIRE d.id IS UNIQUE 
+CREATE CONSTRAINT FOR (u:User) REQUIRE u.id IS UNIQUE;
+CREATE CONSTRAINT FOR (p:Product) REQUIRE p.id IS UNIQUE;
+CREATE CONSTRAINT FOR (i:InventoryItem) REQUIRE i.id IS UNIQUE;
+CREATE CONSTRAINT FOR (o:Order) REQUIRE o.order_id IS UNIQUE;
+CREATE CONSTRAINT FOR (oi:OrderItem) REQUIRE oi.id IS UNIQUE;
+\end{verbatim}
+
+\par These constraints enforce uniqueness on the primary identifiers of the key entities:
+\begin{itemize}[noitemsep]
+    \item The \textbf{DistributionCenter} entity's ID (\texttt{d.id}) must be unique.
+    \item The \textbf{User} entity's ID (\texttt{u.id}) must be unique.
+    \item The \textbf{Product} entity's ID (\texttt{p.id}) must be unique.
+    \item The \textbf{InventoryItem} entity's ID (\texttt{i.id}) must be unique.
+    \item The \textbf{Order} entity's ID (\texttt{o.order\_id}) must be unique.
+    \item The \textbf{OrderItem} entity's ID (\texttt{oi.id}) must be unique.
+\end{itemize}
+
+\par These constraints ensure that the database remains consistent, with no duplicate entries for the core entities.
+
+
+\subsection{Data Import:}
+\begin{verbatim}
+  // Load Distribution Centers
+LOAD CSV WITH HEADERS FROM "file:///distribution_centers.csv" AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (d:DistributionCenter {id: row.id})
+ON CREATE SET d.name = row.name,
+              d.latitude = toFloat(row.latitude),
+              d.longitude = toFloat(row.longitude);
+
+// Load Users
+LOAD CSV WITH HEADERS FROM "file:///users.csv" AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (u:User {id: row.id})
+ON CREATE SET u.first_name = row.first_name,
+              u.last_name = row.last_name,
+              u.email = row.email,
+              u.age = toInteger(row.age),
+              u.gender = row.gender,
+              u.state = row.state,
+              u.city = row.city,
+              u.country = row.country,
+              u.latitude = toFloat(row.latitude),
+              u.longitude = toFloat(row.longitude),
+              u.traffic_source = row.traffic_source,
+              u.created_at = row.created_at
+ON MATCH SET u.count = coalesce(u.count, 0) + 1;
+
+// Load Products
+LOAD CSV WITH HEADERS FROM "file:///products.csv" AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (p:Product {id: row.id})
+ON CREATE SET p.name = row.name,
+              p.brand = row.brand,
+              p.category = row.category,
+              p.cost = toFloat(row.cost),
+              p.retail_price = toFloat(row.retail_price),
+              p.department = row.department,
+              p.sku = row.sku,
+              p.distribution_center_id = row.distribution_center_id
+ON MATCH SET p.count = coalesce(p.count, 0) + 1;
+
+// Load Inventory Items
+LOAD CSV WITH HEADERS FROM "file:///inventory_items.csv" AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (i:InventoryItem {id: row.id})
+ON CREATE SET i.product_id = row.product_id,
+              i.created_at = row.created_at,
+              i.sold_at = row.sold_at,
+              i.cost = toFloat(row.cost),
+              i.product_category = row.product_category,
+              i.product_name = row.product_name,
+              i.product_brand = row.product_brand,
+              i.product_retail_price = toFloat(row.product_retail_price),
+              i.product_department = row.product_department,
+              i.product_sku = row.product_sku,
+              i.product_distribution_center_id = row.product_distribution_center_id
+ON MATCH SET i.count = coalesce(i.count, 0) + 1;
+
+// Load Orders
+LOAD CSV WITH HEADERS FROM "file:///orders.csv" AS row
+WITH row WHERE row.order_id IS NOT NULL
+MERGE (o:Order {order_id: row.order_id})
+ON CREATE SET o.user_id = row.user_id,
+              o.status = row.status,
+              o.created_at = row.created_at,
+              o.shipped_at = row.shipped_at,
+              o.delivered_at = row.delivered_at,
+              o.returned_at = row.returned_at,
+              o.num_of_item = toInteger(row.num_of_item),
+              o.gender = row.gender
+ON MATCH SET o.count = coalesce(o.count, 0) + 1;
+
+// Load Order Items
+LOAD CSV WITH HEADERS FROM "file:///order_items.csv" AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (oi:OrderItem {id: row.id})
+ON CREATE SET oi.order_id = row.order_id,
+               oi.user_id = row.user_id,
+               oi.product_id = row.product_id,
+               oi.inventory_item_id = row.inventory_item_id,
+               oi.status = row.status,
+               oi.created_at = row.created_at,
+               oi.shipped_at = row.shipped_at,
+               oi.delivered_at = row.delivered_at,
+               oi.returned_at = row.returned_at
+ON MATCH SET oi.count = coalesce(oi.count, 0) + 1;
+\end{verbatim}
+
 \section{Cypher Queries}
+In order to provide the Marketing and Logistics departments with the necessary insights, we have developed a series of Cypher queries that address various aspects of the business operations.
 \subsection{Market Analysis for Marketing Department}
 This section of the Cypher Queries aims at providing the Marketing department with insights on the share within the market by providing the number of orders in the Countries in which the Company operates.
 In particular, this is done by providing an overview on the total orders per country, the revenue per country, a demographic overview per country and an analysis of the most present brands within a specific 
 category, which in this study was chosen as the category with the most orders for further relevance.
+In particular, a very useful instrument for the Marketing department is the segmentation of the user base, which allows to divide the users into different categories based on their frequency and spending habits.
 \subsubsection{Total orders by Country}
+This queries the database to determine the total number of orders placed by users in each country, providing insights into the distribution of orders across different regions.
 \begin{verbatim}
   MATCH (u:User)-[:PLACES]->(o:Order)
   RETURN u.country AS country, COUNT(o) AS total_orders
@@ -155,6 +298,7 @@ category, which in this study was chosen as the category with the most orders fo
 \end{table}
 
 \subsubsection{Revenue per Country}
+This query calculates the total revenue generated by orders placed by users in each country, providing insights into the revenue distribution across different regions.
 \begin{verbatim}
   MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)
   MATCH (oi)-[:REFERS_TO]->(p:Product)
@@ -190,6 +334,7 @@ category, which in this study was chosen as the category with the most orders fo
 \end{table}
 
 \subsubsection{Demographic Overview}
+This query provides an overview of the user demographics, including the total number of users, the average age, and the country they belong to.
 \begin{verbatim}
   MATCH (u:User)
   RETURN u.country AS country, 
@@ -226,6 +371,7 @@ category, which in this study was chosen as the category with the most orders fo
 \end{table}
 
   \subsubsection{Categories with the most orders}
+  This query identifies the top three product categories with the highest number of orders, providing insights into the most popular product categories among customers.
   \begin{verbatim}  
     MATCH (oi:OrderItem)-[:REFERS_TO]->(p:Product)
     RETURN p.product_category AS category, COUNT(oi) AS total_orders
@@ -248,6 +394,7 @@ category, which in this study was chosen as the category with the most orders fo
 \end{table}
 
    \subsubsection{Most present brands within the intimates category}
+    This query identifies the top five brands with the highest number of sales within the intimates category, providing insights into the most popular brands in this product category.
    \begin{verbatim}
     MATCH (oi:OrderItem)-[:REFERS_TO]->(p:Product)
     WHERE p.category = "Intimates"
@@ -276,6 +423,7 @@ category, which in this study was chosen as the category with the most orders fo
   \end{table}
 
   \subsubsection{Most present brands within the intimates category per country}
+  This query identifies the top-selling brand within the intimates category for each country, providing insights into the brand preferences of customers in different regions.
   \begin{verbatim}
     MATCH (u:User)-[:ORDERED]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
     WHERE p.category = "Intimates"
@@ -318,6 +466,7 @@ category, which in this study was chosen as the category with the most orders fo
   \end{table}
 
   \subsubsection{Top traffic source per Country}
+  This query identifies the top traffic source for users in each country, providing insights into the most effective marketing channels for customer acquisition.
   \begin{verbatim}
     MATCH (u:User)
     WHERE u.traffic_source IS NOT NULL
@@ -358,6 +507,7 @@ category, which in this study was chosen as the category with the most orders fo
 \end{table}
 
   \subsubsection{Segmentation of User base}
+  This query segments users based on their frequency and spending habits into four categories: High Frequency, High Spending; High Frequency, Low Spending; Low Frequency, High Spending; Low Frequency, Low Spending.
   \begin{verbatim}
     MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
     WITH u, o, SUM(p.cost) AS total_price, COUNT(oi) AS order_count
@@ -437,186 +587,6 @@ WITH p.category AS product_category,
 RETURN product_category, season, frequency
 ORDER BY frequency DESC;
 \end{verbatim}
-
-
-\subsection{Logistic Analysis for Logistics Department}
-This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
-In particular, this is done by evaluating the closest distribution center for a specific user, the status of the order, the update of the history of the orders of user and to check if the user has some order pending, in which case the items can be sent together. 
-
-\subsubsection{Closest Distribution Center}
-\begin{verbatim}
-  MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
-  WHERE u.id = "100"
-  MATCH (d:DistributionCenter)
-  WHERE d.latitude IS NOT NULL AND d.longitude IS NOT NULL
-  WITH u, d, 
-      point({latitude: u.latitude, longitude: u.longitude}) AS user_location, 
-      point({latitude: d.latitude, longitude: d.longitude}) AS distribution_center_location
-  WITH u, d, user_location, distribution_center_location, 
-      point.distance(user_location, distribution_center_location) AS distance
-  ORDER BY distance
-  LIMIT 1
-  RETURN d.name, distance;
-\end{verbatim}
-
-\begin{table}[h!]
-  \centering
-  \caption{Data for Los Angeles CA}
-  \label{tab:los_angeles_data}
-  \begin{tabular}{l r}
-      \toprule
-      \textbf{Location} & \textbf{Value} \\
-      \midrule
-      Los Angeles CA & 10539304.46257035 \\
-      \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsubsection{Order History}
-In order to provide our logistic department with the most updated information, we have to provide them with the history of the orders of a specific user.
-In particular, we have to fill the history node with the latest information. In order to do that, we first add the new order to order, and then we add the new order to the history of the user.
-\begin{verbatim}
-  // Add the new order to the order node
-    MATCH (u:User)
-    WHERE u.id="100"
-    WITH u
-    MATCH (o:Order)
-    WITH u, MAX(o.order_id) AS max_order_id
-    CREATE (newOrder:Order { 
-        order_id: toString(200000), 
-        status: "Processing",
-        gender: u.gender,
-        created_at: date(),
-        returned_at: null,
-        shipped_at: null,
-        delivered_at: null,
-        num_of_item: 3
-    })
-    MERGE (u)-[:PLACES]->(newOrder);
-\end{verbatim}
-\begin{verbatim}
-  // Add the new order to the history of the user
-    MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
-    WHERE u.id = "100"
-    MATCH (o:Order)
-    WHERE o.order_id ="300000"
-    SET h.orders_list = coalesce(h.orders_list, []) + "300000",
-        h.number_of_orders = h.number_of_orders +1
-    MERGE (u)-[:USER_HAS_ORDER]->(o)
-\end{verbatim}
-
-\subsubsection{Number of orders pending}
-\begin{verbatim}
-  MATCH (u:User {id: <user_id>})-[:PLACES]->(o:Order)
-  WITH u, count(o) AS total_orders
-  WHERE total_orders = 10
-  RETURN u.id AS user_id, total_orders
-\end{verbatim}
-
-\subsubsection{Management of multiple orders}
-\begin{verbatim}
-  MATCH (u:User)-[:PLACES]->(o:Order)
-  WHERE u.id="100" AND o.status = 'Processing'  
-  RETURN o.order_id, o.status AS order_status, o.created_at;
-
-\end{verbatim}
-  \begin{table}[h!]
-    \centering
-    \caption{Data for Processing Task}
-    \label{tab:processing_data}
-    \begin{tabular}{l l l}
-        \toprule
-        \textbf{ID} & \textbf{Status} & \textbf{Date} \\
-        \midrule
-        300000 & Processing & 2024-12-11 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\subsubsection{set shipping date or delivered date}
-\begin{verbatim}
-  MATCH (o:Order ) 
-  WHERE o.order_id = "300000"
-  RETURN o.shipped_at;
-\end{verbatim}
-This can be implemented for the delivery date by switching the attribute \textbf{shipped\_at} with \textbf{delivered\_at}.
-\subsubsection{Order Status}
-\begin{verbatim}
-  MATCH (u:User)-[:PLACES]->(o:Order)
-  WHERE u.id = "100"
-  WITH o ORDER BY o.created_at DESC LIMIT 1
-  RETURN o.order_id, o.status AS order_status, o.created_at;
-\end{verbatim}
-\begin{table}[h!]
-  \centering
-  \caption{Data for Processing Task}
-  \label{tab:processing_data}
-  \begin{tabular}{l l l}
-      \toprule
-      \textbf{ID} & \textbf{Status} & \textbf{Timestamp} \\
-      \midrule
-      561 & Processing & 2023-12-15 17:28:00+00:00 \\
-      \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsubsection{Cross-Sell Opportunity}
-\begin{verbatim}
-  MATCH (oi1:OrderItem)-[:REFERS_TO]->(p1:Product),
-      (oi2:OrderItem)-[:REFERS_TO]->(p2:Product)
-  WHERE oi1.order_id = oi2.order_id AND p1.id < p2.id  
-  WITH p1.id AS product1_id, p2.id AS product2_id, oi1.order_id AS order_id
-  WITH product1_id, product2_id, COUNT(DISTINCT order_id) AS frequency
-  RETURN product1_id, product2_id, frequency
-  ORDER BY frequency DESC
-  LIMIT 10;
-\end{verbatim}
-
-!!!! TODO: ADD TABLE WITH RESULTS
-
-\subsubsection{Average Shipping Time by Country}
-This query computes the average shipping time for each country.
-In particular it checks if the order has been delivered and created in the same month, and then calculates the difference in days between the two dates.
-\begin{verbatim}
-  MATCH (u:User)-[:PLACES]->(o:Order)
-  WHERE o.delivered_at IS NOT NULL AND o.created_at IS NOT NULL
-    AND toInteger(substring(o.delivered_at, 5, 2)) = toInteger(substring(o.created_at, 5, 2))
-  WITH u.country AS country, AVG(toInteger(substring(o.delivered_at, 8, 2)) - toInteger(substring(o.created_at, 8, 2))) AS
-      avg_shipping_time
-  RETURN country, avg_shipping_time
-  ORDER BY avg_shipping_time DESC;
-\end{verbatim}
-
-\begin{table}[h!]
-  \centering
-  \caption{Data for Processing Task}
-  \label{tab:processing_data}
-  \begin{tabular}{l r}
-      \toprule
-      \textbf{Country} & \textbf{AvgShippingTime} \\
-      \midrule
-      "Austria" &	6.0\\
-      "Colombia" & 4.857142857142857 \\
-      "Japan" & 3.9200000000000004 \\
-      "France" & 3.845439650464229 \\
-      "Spain" & 3.8244325767690226 \\
-      "Brasil" & 3.8161648177496104 \\
-      "Germany" & 3.8119062697910056 \\
-      "Belgium" & 3.805104408352669 \\
-      "United States" & 3.797328420082921 \\
-      "China" & 3.7945538906214358 \\
-      "South Korea" & 3.794032723772863 \\
-      "United Kingdom" & 3.7925840092699894 \\
-      "Australia" & 3.779141104294479 \\
-      "Poland" & 3.670103092783506 \\
-      "España" & 2.0 \\
-      \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsection{Customer Segmentation Analysis}
-This section of the Cypher Queries aims at providing the Marketing department with more deep insights on the habits of a specific segment of users,
-in particular we are going to perform an age-based segmentation of the users, and then we are going to focus on the biggest segment.
 
 \subsubsection{Age-based Segmentation}
 This query segments users based on their age into the following groups: 18-24, 25-34, 35-44, 45-54, 55-64, and 65+.
@@ -699,6 +669,222 @@ This analysis can provide insights into the preferences and behaviors of the old
       "M" & "Jeans" & 771 \\
       "M" & "Pants" & 726 \\
       "M" & "Fashion Hoodies \& Sweatshirts" & 692 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Top 10 Users by Orders Number and Total Spending}
+This query identifies the top 10 users who placed the highest number of orders. It also calculates the total amount spent by each user by summing the costs of the products in their orders. The results are sorted first by the number of orders in descending order, and in case of ties, by total spending in descending order. For each user, the query returns their user ID, email, number of orders, and total spending, offering a comprehensive overview of the platform's most valuable customers.
+The idea behind it could be to increase fidelization by offering them special discounts or promotions.
+\begin{verbatim}
+  // Step 1: Number of orders per user
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WITH u, COUNT(o) AS num_orders
+
+  // Step 2: Total spent by user
+  MATCH (u)-[:PLACES]->(:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
+  WITH u.id AS user_id, 
+      u.email AS email, 
+      num_orders, 
+      SUM(p.cost) AS total_spent
+
+  // Step 3: Order by number of orders and total spent
+  ORDER BY num_orders DESC, total_spent DESC
+  LIMIT 10
+  RETURN user_id, email, num_orders, total_spent;
+\end{verbatim}
+
+\subsubsection{Users without Orders}
+This query retrieves the user IDs and email addresses of all users who have not placed any orders. The idea behind it is that the marketing department could use the user's email to encourage them to make a purchase by sending them targeted promotions or discounts.
+\begin{verbatim}
+  MATCH (u:User)
+  WHERE NOT EXISTS {
+      MATCH (u)-[:PLACES]->(:Order)
+  }
+  RETURN u.id AS user_id, u.email AS email
+  ORDER BY u.id
+  LIMIT 10;
+\end{verbatim}
+
+
+\subsection{Logistic Analysis for Logistics Department}
+This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
+In particular, this is done by evaluating the closest distribution center for a specific user, the status of the order, the update of the history of the orders of user and to check if the user has some order pending, in which case the items can be sent together. 
+
+\subsubsection{Closest Distribution Center}
+This query calculates the distance between a specific user and all distribution centers in the database, and returns the name of the closest distribution center along with the distance in meters.
+\begin{verbatim}
+  MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
+  WHERE u.id = "100"
+  MATCH (d:DistributionCenter)
+  WHERE d.latitude IS NOT NULL AND d.longitude IS NOT NULL
+  WITH u, d, 
+      point({latitude: u.latitude, longitude: u.longitude}) AS user_location, 
+      point({latitude: d.latitude, longitude: d.longitude}) AS distribution_center_location
+  WITH u, d, user_location, distribution_center_location, 
+      point.distance(user_location, distribution_center_location) AS distance
+  ORDER BY distance
+  LIMIT 1
+  RETURN d.name, distance;
+\end{verbatim}
+
+\begin{table}[h!]
+  \centering
+  \caption{Data for Los Angeles CA}
+  \label{tab:los_angeles_data}
+  \begin{tabular}{l r}
+      \toprule
+      \textbf{Location} & \textbf{Value} \\
+      \midrule
+      Los Angeles CA & 10539304.46257035 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Order History}
+In order to provide our logistic department with the most updated information, we have to provide them with the history of the orders of a specific user.
+In particular, we have to fill the history node with the latest information. In order to do that, we first add the new order to order, and then we add the new order to the history of the user.
+\begin{verbatim}
+  // Add the new order to the order node
+    MATCH (u:User)
+    WHERE u.id="100"
+    WITH u
+    MATCH (o:Order)
+    WITH u, MAX(o.order_id) AS max_order_id
+    CREATE (newOrder:Order { 
+        order_id: toString(200000), 
+        status: "Processing",
+        gender: u.gender,
+        created_at: date(),
+        returned_at: null,
+        shipped_at: null,
+        delivered_at: null,
+        num_of_item: 3
+    })
+    MERGE (u)-[:PLACES]->(newOrder);
+\end{verbatim}
+\begin{verbatim}
+  // Add the new order to the history of the user
+    MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
+    WHERE u.id = "100"
+    MATCH (o:Order)
+    WHERE o.order_id ="300000"
+    SET h.orders_list = coalesce(h.orders_list, []) + "300000",
+        h.number_of_orders = h.number_of_orders +1
+    MERGE (u)-[:USER_HAS_ORDER]->(o)
+\end{verbatim}
+
+\subsubsection{Number of orders pending}
+This query retrieves the number of orders that are currently pending for a specific user. This information can be used by the logistics department to prioritize the processing and delivery of orders for users with multiple pending orders.
+\begin{verbatim}
+  MATCH (u:User {id: <user_id>})-[:PLACES]->(o:Order)
+  WITH u, count(o) AS total_orders
+  WHERE total_orders = 10
+  RETURN u.id AS user_id, total_orders
+\end{verbatim}
+
+\subsubsection{Management of multiple orders}
+This query retrieves the order IDs of all orders that are currently pending for a specific user. This information can be used by the logistics department to group multiple orders together for delivery, reducing the number of shipments and improving efficiency.
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE u.id="100" AND o.status = 'Processing'  
+  RETURN o.order_id, o.status AS order_status, o.created_at;
+
+\end{verbatim}
+  \begin{table}[h!]
+    \centering
+    \caption{Data for Processing Task}
+    \label{tab:processing_data}
+    \begin{tabular}{l l l}
+        \toprule
+        \textbf{ID} & \textbf{Status} & \textbf{Date} \\
+        \midrule
+        300000 & Processing & 2024-12-11 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Set shipping date or delivered date}
+This query sets the shipping date or delivered date for a specific order. This information can be used to track the progress of the order and provide customers with real-time updates on the status of their delivery.
+\begin{verbatim}
+  MATCH (o:Order ) 
+  WHERE o.order_id = "300000"
+  RETURN o.shipped_at;
+\end{verbatim}
+This can be implemented for the delivery date by switching the attribute \textbf{shipped\_at} with \textbf{delivered\_at}.
+
+\subsubsection{Order Status}
+This query retrieves the status of the most recent order placed by a specific user. This information can be used by the logistics department to track the progress of the order and provide real-time updates to the user
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE u.id = "100"
+  WITH o ORDER BY o.created_at DESC LIMIT 1
+  RETURN o.order_id, o.status AS order_status, o.created_at;
+\end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{Data for Processing Task}
+  \label{tab:processing_data}
+  \begin{tabular}{l l l}
+      \toprule
+      \textbf{ID} & \textbf{Status} & \textbf{Timestamp} \\
+      \midrule
+      561 & Processing & 2023-12-15 17:28:00+00:00 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Cross-Sell Opportunity}
+This query identifies the top 10 pairs of products that are frequently purchased together in the same order. This information can be used by the logistics department to optimize the packaging and delivery process by grouping frequently purchased items together.
+\begin{verbatim}
+  MATCH (oi1:OrderItem)-[:REFERS_TO]->(p1:Product),
+      (oi2:OrderItem)-[:REFERS_TO]->(p2:Product)
+  WHERE oi1.order_id = oi2.order_id AND p1.id < p2.id  
+  WITH p1.id AS product1_id, p2.id AS product2_id, oi1.order_id AS order_id
+  WITH product1_id, product2_id, COUNT(DISTINCT order_id) AS frequency
+  RETURN product1_id, product2_id, frequency
+  ORDER BY frequency DESC
+  LIMIT 10;
+\end{verbatim}
+
+!!!! TODO: ADD TABLE WITH RESULTS
+
+\subsubsection{Average Shipping Time by Country}
+This query computes the average shipping time for each country.
+In particular it checks if the order has been delivered and created in the same month, and then calculates the difference in days between the two dates.
+\begin{verbatim}
+  MATCH (u:User)-[:PLACES]->(o:Order)
+  WHERE o.delivered_at IS NOT NULL AND o.created_at IS NOT NULL
+    AND toInteger(substring(o.delivered_at, 5, 2)) = toInteger(substring(o.created_at, 5, 2))
+  WITH u.country AS country, AVG(toInteger(substring(o.delivered_at, 8, 2)) - toInteger(substring(o.created_at, 8, 2))) AS
+      avg_shipping_time
+  RETURN country, avg_shipping_time
+  ORDER BY avg_shipping_time DESC;
+\end{verbatim}
+
+\begin{table}[h!]
+  \centering
+  \caption{Data for Processing Task}
+  \label{tab:processing_data}
+  \begin{tabular}{l r}
+      \toprule
+      \textbf{Country} & \textbf{AvgShippingTime} \\
+      \midrule
+      "Austria" &	6.0\\
+      "Colombia" & 4.857142857142857 \\
+      "Japan" & 3.9200000000000004 \\
+      "France" & 3.845439650464229 \\
+      "Spain" & 3.8244325767690226 \\
+      "Brasil" & 3.8161648177496104 \\
+      "Germany" & 3.8119062697910056 \\
+      "Belgium" & 3.805104408352669 \\
+      "United States" & 3.797328420082921 \\
+      "China" & 3.7945538906214358 \\
+      "South Korea" & 3.794032723772863 \\
+      "United Kingdom" & 3.7925840092699894 \\
+      "Australia" & 3.779141104294479 \\
+      "Poland" & 3.670103092783506 \\
+      "España" & 2.0 \\
       \bottomrule
   \end{tabular}
 \end{table}
