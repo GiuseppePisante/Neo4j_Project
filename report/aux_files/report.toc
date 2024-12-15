@@ -1,36 +1,39 @@
 \babel@toc {english}{}\relax 
 \contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
 \contentsline {paragraph}{}{3}{section*.2}%
-\contentsline {section}{\numberline {2}Assumptions}{4}{section.2}%
+\contentsline {section}{\numberline {2}Data Wrangling}{4}{section.2}%
 \contentsline {paragraph}{}{4}{section*.3}%
-\contentsline {section}{\numberline {3}Dataset}{5}{section.3}%
+\contentsline {section}{\numberline {3}Assumptions}{5}{section.3}%
 \contentsline {paragraph}{}{5}{section*.4}%
-\contentsline {subsection}{\numberline {3.1}Entities}{5}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Relationships}{6}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Constraints:}{7}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Data Import:}{8}{subsection.3.4}%
-\contentsline {section}{\numberline {4}Cypher Queries}{10}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Market Analysis for Marketing Department}{10}{subsection.4.1}%
-\contentsline {subsubsection}{\numberline {4.1.1}Total orders by Country}{10}{subsubsection.4.1.1}%
-\contentsline {subsubsection}{\numberline {4.1.2}Revenue per Country}{11}{subsubsection.4.1.2}%
-\contentsline {subsubsection}{\numberline {4.1.3}Demographic Overview}{11}{subsubsection.4.1.3}%
-\contentsline {subsubsection}{\numberline {4.1.4}Categories with the most orders}{12}{subsubsection.4.1.4}%
-\contentsline {subsubsection}{\numberline {4.1.5}Most present brands within the intimates category}{12}{subsubsection.4.1.5}%
-\contentsline {subsubsection}{\numberline {4.1.6}Most present brands within the intimates category per country}{13}{subsubsection.4.1.6}%
-\contentsline {subsubsection}{\numberline {4.1.7}Top traffic source per Country}{14}{subsubsection.4.1.7}%
-\contentsline {subsubsection}{\numberline {4.1.8}Segmentation of User base}{14}{subsubsection.4.1.8}%
-\contentsline {subsubsection}{\numberline {4.1.9}Best and Worst Selling Product Categories by Season}{15}{subsubsection.4.1.9}%
-\contentsline {subsubsection}{\numberline {4.1.10}Age-based Segmentation}{17}{subsubsection.4.1.10}%
-\contentsline {subsubsection}{\numberline {4.1.11}Top Product Categories Purchased by Gender in the Selected Segment}{18}{subsubsection.4.1.11}%
-\contentsline {subsubsection}{\numberline {4.1.12}Top 10 Users by Orders Number and Total Spending}{19}{subsubsection.4.1.12}%
-\contentsline {subsubsection}{\numberline {4.1.13}Users without Orders}{20}{subsubsection.4.1.13}%
-\contentsline {subsection}{\numberline {4.2}Logistic Analysis for Logistics Department}{20}{subsection.4.2}%
-\contentsline {subsubsection}{\numberline {4.2.1}Closest Distribution Center}{21}{subsubsection.4.2.1}%
-\contentsline {subsubsection}{\numberline {4.2.2}Order History}{21}{subsubsection.4.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.3}Number of orders pending}{22}{subsubsection.4.2.3}%
-\contentsline {subsubsection}{\numberline {4.2.4}Management of multiple orders}{22}{subsubsection.4.2.4}%
-\contentsline {subsubsection}{\numberline {4.2.5}Set shipping date or delivered date}{23}{subsubsection.4.2.5}%
-\contentsline {subsubsection}{\numberline {4.2.6}Order Status}{23}{subsubsection.4.2.6}%
-\contentsline {subsubsection}{\numberline {4.2.7}Cross-Sell Opportunity}{23}{subsubsection.4.2.7}%
-\contentsline {subsubsection}{\numberline {4.2.8}Average Shipping Time by Country}{24}{subsubsection.4.2.8}%
-\contentsline {section}{\numberline {5}References \& Sources}{25}{section.5}%
+\contentsline {section}{\numberline {4}Dataset}{6}{section.4}%
+\contentsline {paragraph}{}{6}{section*.5}%
+\contentsline {subsection}{\numberline {4.1}Entities:}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Relationships:}{7}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Constraints:}{8}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Data Import:}{9}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Cypher Queries}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Market Analysis for Marketing Department:}{12}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Total orders by Country}{12}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Revenue per Country}{12}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Demographic Overview}{13}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Categories with the most orders}{13}{subsubsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.5}Most present brands within the intimates category}{14}{subsubsection.5.1.5}%
+\contentsline {subsubsection}{\numberline {5.1.6}Most present brands within the intimates category per country}{16}{subsubsection.5.1.6}%
+\contentsline {subsubsection}{\numberline {5.1.7}Top traffic source per Country}{17}{subsubsection.5.1.7}%
+\contentsline {subsubsection}{\numberline {5.1.8}Segmentation of User base}{17}{subsubsection.5.1.8}%
+\contentsline {subsubsection}{\numberline {5.1.9}Best and Worst Selling Product Categories by Season}{18}{subsubsection.5.1.9}%
+\contentsline {subsubsection}{\numberline {5.1.10}Age-based Segmentation}{19}{subsubsection.5.1.10}%
+\contentsline {subsubsection}{\numberline {5.1.11}Top Product Categories Purchased by Gender in the Selected Segment}{20}{subsubsection.5.1.11}%
+\contentsline {subsubsection}{\numberline {5.1.12}Top 10 Users by Orders Number and Total Spending}{21}{subsubsection.5.1.12}%
+\contentsline {subsubsection}{\numberline {5.1.13}Users without Orders}{22}{subsubsection.5.1.13}%
+\contentsline {subsection}{\numberline {5.2}Logistic Analysis for Logistics Department:}{22}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Closest Distribution Center}{23}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Order History}{24}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Number of orders pending}{24}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Management of multiple orders}{25}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Set shipping date or delivered date}{25}{subsubsection.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.2.6}Order Status}{26}{subsubsection.5.2.6}%
+\contentsline {subsubsection}{\numberline {5.2.7}Cross-Sell Opportunity}{26}{subsubsection.5.2.7}%
+\contentsline {subsubsection}{\numberline {5.2.8}Average Shipping Time by Country}{26}{subsubsection.5.2.8}%
+\contentsline {section}{\numberline {6}Conclusion}{27}{section.6}%
+\contentsline {section}{\numberline {7}References \& Sources}{28}{section.7}%

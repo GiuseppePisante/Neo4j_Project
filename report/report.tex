@@ -43,10 +43,49 @@
 \tableofcontents
 \newpage
 \section{Introduction}
-\paragraph{} This project developes a comprehensive overview of an open source ecommerce dataset, through the use of the Neo4j technology, which is very well suited for this type of database.
+\paragraph{} This project develops a comprehensive overview of an open source ecommerce dataset \cite{kaggle_dataset}, through the use of the Neo4j technology, which is very well suited for this type of database.
 \\
 In particular, in order to fully exploit such technology, our study was developed using a relational database management system (RDBMS), which facilitates the querying of data to support the Marketing and Supply Chain division with key functions like product recommendations, customer segmentation, sales analysis, and inventory forecasting. 
 The system allows for tracking of customer purchase history, order details, product categories, payment methods, and discounts, helping businesses optimize their operations and enhance the customer experience.
+\\
+This report provides an overview on the dataset, the data wrangling process, the assumptions made and a total of 20 Cypher queries that could provide interesting insights for the Marketing and Logistics departments.
+\newpage
+
+\section{Data Wrangling}
+\paragraph{} Our main restructuring to the dataset was to add the entity history, with which we can track the information related to each user in time. This is useful to understand the evolution of the user's data and to make predictions based on the user's past behavior.
+\\
+In order to add such entity to the dataser, the following query was executed:
+\begin{verbatim}
+LOAD CSV WITH HEADERS FROM "file:///users.csv" AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (u:User {id: row.id}) // Match the user node
+MERGE (h:History {user_id: row.id}) // Create a new History node for the user
+ON CREATE SET 
+    h.city = row.city,
+    h.state = row.state,
+    h.postal_code = row.postal_code,
+    h.orders_list = [], 
+    h.number_of_orders = 0
+MERGE (u)-[:PERFORM_EVENT]->(h);
+\end{verbatim}
+
+In addition, we ran the following Cypher query to evaluate the presence of null entries:
+\begin{verbatim}
+MATCH (o:DistributionCenter)
+WHERE o.id IS NULL
+RETURN count(o) AS missingIdCount;
+\end{verbatim}
+
+Resulting in 0 missing IDs. This was repeated for all the relevant attributes of the entities, with the same result.
+\\
+It is important to note that the following query would result in multiple null IDs, which would be expected as the attribute related to the package delivery could be null, indicating that the package hasn't been shipped, delivered or returned. 
+In addition, the number of null related to the attribute "shipped\_at" is lower than the number of null related to the attribute "delivered\_at", which is expected as the package must be shipped first before being delivered.
+\begin{verbatim}
+MATCH (o:Order)
+WHERE o.shipped_at IS NULL
+RETURN count(o) AS missingIdCount;
+\end{verbatim}
+In conclusion, we did not find necessary to modify the dataset format, as it was already well structured and ready to be imported into the Neo4j database. 
 
 \newpage
 \section{Assumptions}
@@ -71,7 +110,7 @@ The system allows for tracking of customer purchase history, order details, prod
  		\includegraphics[width = 15 cm]{polilogo.png}
 		\captionof{figure}{E-R Diagram}
 	\end{center}
-  \subsection{Entities}
+  \subsection{Entities:}
     \par Starting from the considerations previously exposed regarding the implementation hypotheses, we have drawn an ER diagram (\textbf{Figure 1}) which includes 8 different entities and 8 many-to-many relationships described below in the logical model: \par
     \begin{itemize}[noitemsep]
     \item[-]	\textbf{User}(\underline{user\_id}, Name, Email, Address, PhoneNumber, DateOfBirth)
@@ -82,6 +121,7 @@ The system allows for tracking of customer purchase history, order details, prod
     \item[-]	\textbf{Review}(\underline{review\_id}, \underline{user\_id}, \underline{product\_id}, Rating, Comment, ReviewDate)
     \item[-]	\textbf{Category}(\underline{category\_id}, CategoryName)
     \item[-]	\textbf{Distribution\_Center}(\underline{center\_id}, CenterName, Location)
+    \item[-]	\textbf{History}(\underline{user\_id}, City, State, PostalCode, OrdersList, NumberOfOrders)
     \end{itemize} \par
 
     The \textbf{User} entity represents the individuals who make purchases on the platform, storing essential information such as their personal details and contact information.
@@ -98,9 +138,11 @@ The system allows for tracking of customer purchase history, order details, prod
 
     The \textbf{Category} entity defines the product categories, allowing for classification of products into different types (e.g., electronics, clothing).
 
+    The \textbf{History} entity tracks the user's historical data, including the city, state, postal code, order list, and the number of orders placed.
+
     Finally, the \textbf{Distribution\_Center} entity represents the centers from which the products are shipped, capturing details such as center name and location.
 
-    \subsection{Relationships}
+    \subsection{Relationships:}
     \begin{itemize}[noitemsep]
       
         \item[\textbf{User}] $(User)-[:PLACED]->(Order)$
@@ -134,6 +176,10 @@ The system allows for tracking of customer purchase history, order details, prod
         \item[\textbf{Product}] $(Product)-[:BELONGS\_TO]->(Category)$
         
         Relationship between a Product and a Category, where a product can belong to one or more categories, and each category can contain multiple products.
+
+        \item[\textbf{User}] $(User)-[:PERFORM\_EVENT]->(History)$
+
+        Relationship between a User and a History, where a user can have multiple historical records, and each historical record is linked to one user.
         
     \end{itemize}
     
@@ -151,6 +197,7 @@ CREATE CONSTRAINT FOR (p:Product) REQUIRE p.id IS UNIQUE;
 CREATE CONSTRAINT FOR (i:InventoryItem) REQUIRE i.id IS UNIQUE;
 CREATE CONSTRAINT FOR (o:Order) REQUIRE o.order_id IS UNIQUE;
 CREATE CONSTRAINT FOR (oi:OrderItem) REQUIRE oi.id IS UNIQUE;
+CREATE CONSTRAINT ON (h:History) ASSERT h.user_id IS UNIQUE;
 \end{verbatim}
 
 \par These constraints enforce uniqueness on the primary identifiers of the key entities:
@@ -161,10 +208,10 @@ CREATE CONSTRAINT FOR (oi:OrderItem) REQUIRE oi.id IS UNIQUE;
     \item The \textbf{InventoryItem} entity's ID (\texttt{i.id}) must be unique.
     \item The \textbf{Order} entity's ID (\texttt{o.order\_id}) must be unique.
     \item The \textbf{OrderItem} entity's ID (\texttt{oi.id}) must be unique.
+    \item The \textbf{History} entity's user ID (\texttt{h.user\_id}) must be unique.
 \end{itemize}
 
 \par These constraints ensure that the database remains consistent, with no duplicate entries for the core entities.
-
 
 \subsection{Data Import:}
 \begin{verbatim}
@@ -255,9 +302,10 @@ ON CREATE SET oi.order_id = row.order_id,
 ON MATCH SET oi.count = coalesce(oi.count, 0) + 1;
 \end{verbatim}
 
+\newpage
 \section{Cypher Queries}
 In order to provide the Marketing and Logistics departments with the necessary insights, we have developed a series of Cypher queries that address various aspects of the business operations.
-\subsection{Market Analysis for Marketing Department}
+\subsection{Market Analysis for Marketing Department:}
 This section of the Cypher Queries aims at providing the Marketing department with insights on the share within the market by providing the number of orders in the Countries in which the Company operates.
 In particular, this is done by providing an overview on the total orders per country, the revenue per country, a demographic overview per country and an analysis of the most present brands within a specific 
 category, which in this study was chosen as the category with the most orders for further relevance.
@@ -640,10 +688,8 @@ This analysis can provide insights into the preferences and behaviors of the old
   MATCH (u:User)-[:PLACES]->(o:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
   WHERE u.age >= 65
   WITH u.gender AS gender, p.category AS product_category, COUNT(*) AS frequency
-  // Raggruppa per genere e categoria di prodotto
   WITH gender, product_category, frequency
   ORDER BY frequency DESC
-  // Limita il numero di risultati per ciascun gruppo
   WITH gender, COLLECT({category: product_category, frequency: frequency}) AS categories
   WITH gender, categories[0..5] AS top_categories
   UNWIND top_categories AS top_category
@@ -677,22 +723,38 @@ This analysis can provide insights into the preferences and behaviors of the old
 This query identifies the top 10 users who placed the highest number of orders. It also calculates the total amount spent by each user by summing the costs of the products in their orders. The results are sorted first by the number of orders in descending order, and in case of ties, by total spending in descending order. For each user, the query returns their user ID, email, number of orders, and total spending, offering a comprehensive overview of the platform's most valuable customers.
 The idea behind it could be to increase fidelization by offering them special discounts or promotions.
 \begin{verbatim}
-  // Step 1: Number of orders per user
   MATCH (u:User)-[:PLACES]->(o:Order)
   WITH u, COUNT(o) AS num_orders
-
-  // Step 2: Total spent by user
   MATCH (u)-[:PLACES]->(:Order)-[:CONTAINS]->(oi:OrderItem)-[:REFERS_TO]->(p:Product)
   WITH u.id AS user_id, 
       u.email AS email, 
       num_orders, 
       SUM(p.cost) AS total_spent
-
-  // Step 3: Order by number of orders and total spent
   ORDER BY num_orders DESC, total_spent DESC
   LIMIT 10
   RETURN user_id, email, num_orders, total_spent;
 \end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{User Orders and Spending}
+  \label{tab:user_orders_spending}
+  \begin{tabular}{l l r r}
+      \toprule
+      \textbf{User ID} & \textbf{Email} & \textbf{Num Orders} & \textbf{Total Spent} \\
+      \midrule
+      15746 & matthewwashington@example.net & 4 & 753.38 \\
+      80671 & timothysmith@example.com       & 4 & 724.57 \\
+      94183 & matthewmaynard@example.org     & 4 & 689.41 \\
+      78682 & danielhayden@example.net       & 4 & 687.55 \\
+      22656 & michaelkim@example.net         & 4 & 660.35 \\
+      75693 & andreagray@example.com         & 4 & 623.43 \\
+      9461  & juanmiller@example.org         & 4 & 614.99 \\
+      5836  & nathandavis@example.com        & 4 & 608.57 \\
+      93588 & johnjohnson@example.net        & 4 & 599.86 \\
+      62477 & jessicasloan@example.net       & 4 & 591.42 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsubsection{Users without Orders}
 This query retrieves the user IDs and email addresses of all users who have not placed any orders. The idea behind it is that the marketing department could use the user's email to encourage them to make a purchase by sending them targeted promotions or discounts.
@@ -705,9 +767,30 @@ This query retrieves the user IDs and email addresses of all users who have not 
   ORDER BY u.id
   LIMIT 10;
 \end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{User IDs and Emails}
+  \label{tab:user_ids_emails}
+  \begin{tabular}{l l}
+      \toprule
+      \textbf{User ID} & \textbf{Email} \\
+      \midrule
+      10     & henrydennis@example.org       \\
+      1001   & michaelanderson@example.org   \\
+      10016  & aprilstafford@example.org     \\
+      10020  & jasmineperkins@example.com    \\
+      10027  & charlessheppard@example.org   \\
+      10033  & sarahward@example.org         \\
+      10068  & maureenbryant@example.org     \\
+      10073  & markwoods@example.net         \\
+      10081  & sandymeyer@example.org        \\
+      10082  & ronniemills@example.com       \\
+      \bottomrule
+  \end{tabular}
+\end{table}
 
 
-\subsection{Logistic Analysis for Logistics Department}
+\subsection{Logistic Analysis for Logistics Department:}
 This section of the Cypher Queries aims at providing the Logistics department with insights on the real-time tracking of the orders and all the possible information related to tuser in order to make the delivery as smooth as possible.
 In particular, this is done by evaluating the closest distribution center for a specific user, the status of the order, the update of the history of the orders of user and to check if the user has some order pending, in which case the items can be sent together. 
 
@@ -745,7 +828,6 @@ This query calculates the distance between a specific user and all distribution 
 In order to provide our logistic department with the most updated information, we have to provide them with the history of the orders of a specific user.
 In particular, we have to fill the history node with the latest information. In order to do that, we first add the new order to order, and then we add the new order to the history of the user.
 \begin{verbatim}
-  // Add the new order to the order node
     MATCH (u:User)
     WHERE u.id="100"
     WITH u
@@ -764,7 +846,6 @@ In particular, we have to fill the history node with the latest information. In 
     MERGE (u)-[:PLACES]->(newOrder);
 \end{verbatim}
 \begin{verbatim}
-  // Add the new order to the history of the user
     MATCH (u:User)-[:PERFORM_EVENT]->(h:History)
     WHERE u.id = "100"
     MATCH (o:Order)
@@ -777,9 +858,9 @@ In particular, we have to fill the history node with the latest information. In 
 \subsubsection{Number of orders pending}
 This query retrieves the number of orders that are currently pending for a specific user. This information can be used by the logistics department to prioritize the processing and delivery of orders for users with multiple pending orders.
 \begin{verbatim}
-  MATCH (u:User {id: <user_id>})-[:PLACES]->(o:Order)
+  MATCH (u:User)-[:PLACES]->(o:Order)
   WITH u, count(o) AS total_orders
-  WHERE total_orders = 10
+  WHERE total_orders = 10 AND u.id = "100"
   RETURN u.id AS user_id, total_orders
 \end{verbatim}
 
@@ -889,19 +970,18 @@ In particular it checks if the order has been delivered and created in the same 
   \end{tabular}
 \end{table}
 
-
+\section{Conclusion}
+In conclusion, we have successfully implemented a comprehensive set of Cypher queries to analyze the e-commerce dataset and provide valuable insights for different departments within the organization. The queries cover a wide range of use cases, by leveraging the power of Neo4j's graph database and Cypher query language. 
+\\
+This project was a very useful instrument to apply hands-on knowledge of Cypher queries and graph databases, and it allowed us to explore the potential of Neo4j in real-world scenarios. 
 
 
 \newpage
 \section{References \& Sources}
   \begin{thebibliography}{9}
     \bibitem{} Course Slides
-    \bibitem{} https://pysimplegui.readthedocs.io/en/latest/call%20reference/
-    \bibitem{} https://py2neo.org/
+    \bibitem{kaggle_dataset} Mustafa Keser, \emph{Looker E-commerce BigQuery Dataset}, \url{https://www.kaggle.com/datasets/mustafakeser4/looker-ecommerce-bigquery-dataset?select=order_items.csv%20reference/}
     \bibitem{} https://neo4j.com/docs/cypher-manual/current/
-    \bibitem{} https://neo4j.com/developer/python/
-    \bibitem{} http://iniball.altervista.org/Software/ProgER
     \bibitem{} https://neo4j.com/developer/cypher/
-    \bibitem{} https://pandas.pydata.org/docs/
   \end{thebibliography}
 \end{document}
