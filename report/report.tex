@@ -54,7 +54,7 @@ This report provides an overview on the dataset, the data wrangling process, the
 \section{Data Wrangling}
 \paragraph{} Our main restructuring to the dataset was to add the entity history, with which we can track the information related to each user in time. This is useful to understand the evolution of the user's data and to make predictions based on the user's past behavior.
 \\
-In order to add such entity to the dataser, the following query was executed:
+In order to add such entity to the dataser, and its relation with user entity, the following query was executed:
 \begin{verbatim}
 LOAD CSV WITH HEADERS FROM "file:///users.csv" AS row
 WITH row WHERE row.id IS NOT NULL
@@ -197,7 +197,7 @@ CREATE CONSTRAINT FOR (p:Product) REQUIRE p.id IS UNIQUE;
 CREATE CONSTRAINT FOR (i:InventoryItem) REQUIRE i.id IS UNIQUE;
 CREATE CONSTRAINT FOR (o:Order) REQUIRE o.order_id IS UNIQUE;
 CREATE CONSTRAINT FOR (oi:OrderItem) REQUIRE oi.id IS UNIQUE;
-CREATE CONSTRAINT ON (h:History) ASSERT h.user_id IS UNIQUE;
+CREATE CONSTRAINT FOR (h:History) REQUIRE h.user_id IS UNIQUE;
 \end{verbatim}
 
 \par These constraints enforce uniqueness on the primary identifiers of the key entities:
