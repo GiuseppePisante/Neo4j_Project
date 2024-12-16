@@ -19,7 +19,7 @@
 \contentsline {subsubsection}{\numberline {5.1.4}Categories with the most orders}{14}{subsubsection.5.1.4}%
 \contentsline {subsubsection}{\numberline {5.1.5}Most present brands within the intimates category}{15}{subsubsection.5.1.5}%
 \contentsline {subsubsection}{\numberline {5.1.6}Most present brands within the intimates category per country}{17}{subsubsection.5.1.6}%
-\contentsline {subsubsection}{\numberline {5.1.7}Top traffic source per Country}{18}{subsubsection.5.1.7}%
+\contentsline {subsubsection}{\numberline {5.1.7}Top traffic source per Country}{17}{subsubsection.5.1.7}%
 \contentsline {subsubsection}{\numberline {5.1.8}Segmentation of User base}{18}{subsubsection.5.1.8}%
 \contentsline {subsubsection}{\numberline {5.1.9}Best and Worst Selling Product Categories by Season}{19}{subsubsection.5.1.9}%
 \contentsline {subsubsection}{\numberline {5.1.10}Age-based Segmentation}{20}{subsubsection.5.1.10}%
@@ -28,11 +28,11 @@
 \contentsline {subsubsection}{\numberline {5.1.13}Users without Orders}{23}{subsubsection.5.1.13}%
 \contentsline {subsection}{\numberline {5.2}Logistic Analysis for Logistics Department:}{23}{subsection.5.2}%
 \contentsline {subsubsection}{\numberline {5.2.1}Closest Distribution Center}{24}{subsubsection.5.2.1}%
-\contentsline {subsubsection}{\numberline {5.2.2}Order History}{25}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.2}Order History}{24}{subsubsection.5.2.2}%
 \contentsline {subsubsection}{\numberline {5.2.3}Number of orders pending}{25}{subsubsection.5.2.3}%
 \contentsline {subsubsection}{\numberline {5.2.4}Management of multiple orders}{26}{subsubsection.5.2.4}%
 \contentsline {subsubsection}{\numberline {5.2.5}Set shipping date or delivered date}{26}{subsubsection.5.2.5}%
-\contentsline {subsubsection}{\numberline {5.2.6}Order Status}{27}{subsubsection.5.2.6}%
+\contentsline {subsubsection}{\numberline {5.2.6}Order Status}{26}{subsubsection.5.2.6}%
 \contentsline {subsubsection}{\numberline {5.2.7}Cross-Sell Opportunity}{27}{subsubsection.5.2.7}%
 \contentsline {subsubsection}{\numberline {5.2.8}Average Shipping Time by Country}{27}{subsubsection.5.2.8}%
 \contentsline {section}{\numberline {6}Conclusion}{28}{section.6}%
