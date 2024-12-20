@@ -98,16 +98,14 @@ In conclusion, we did not find necessary to modify the dataset format, as it was
    \item[-] Each order can contain multiple products.
    \item[-] Each order has a unique ID, order date, total amount, and payment method.
    \item[-] Each product can have multiple variants (e.g., size, color).
-   \item[-] Each product can have multiple reviews, where each review includes a rating and comments from a customer.
    \item[-] Each payment is associated with a unique transaction ID, payment method, and amount.
-   \item[-] Each customer can leave a review for a product if and only if they have purchased it.
 \end{itemize}
 
 \clearpage
 \section{Dataset}
 \paragraph{}
 	\begin{center}
- 		\includegraphics[width = 15 cm]{polilogo.png}
+ 		\includegraphics[width = 12 cm]{PhotoProjectDiagram.png}
 		\captionof{figure}{E-R Diagram}
 	\end{center}
   \subsection{Entities:}
@@ -144,40 +142,36 @@ In conclusion, we did not find necessary to modify the dataset format, as it was
 
     \subsection{Relationships:}
     \begin{itemize}[noitemsep]
-      
-        \item[\textbf{User}] $(User)-[:PLACED]->(Order)$
-        
-        Relationship between a User and an Order, where a user can place multiple orders, and each order is linked to one user.
-        
-        \item[\textbf{Order}] $(Order)-[:CONTAINS]->(Order\_Item)$
-        
-        Relationship between an Order and the Order\_Item, where an order can contain multiple items, and each order item is linked to one order.
-        
-        \item[\textbf{Product}] $(Product)-[:PART\_OF]->(Order\_Item)$
-        
-        Relationship between a Product and the Order\_Item, where a product can appear in multiple order items, and each order item corresponds to a specific product.
-        
-        \item[\textbf{User}] $(User)-[:WRITES]->(Review)$
-        
-        Relationship between a User and a Review, where a user can write multiple reviews, and each review is written by one user.
-        
-        \item[\textbf{Product}] $(Product)-[:HAS\_REVIEW]->(Review)$
-        
-        Relationship between a Product and a Review, where a product can have multiple reviews, and each review is linked to one product.
-        
-        \item[\textbf{Order}] $(Order)-[:PAID\_BY]->(Payment)$
-        
-        Relationship between an Order and a Payment, where an order can have one or more payments, and each payment corresponds to one order.
-        
-        \item[\textbf{Order}] $(Order)-[:SHIPPED\_FROM]->(Distribution\_Center)$
-        
-        Relationship between an Order and a Distribution\_Center, where an order is processed by a single distribution center, and each distribution center can process multiple orders.
-        
-        \item[\textbf{Product}] $(Product)-[:BELONGS\_TO]->(Category)$
-        
-        Relationship between a Product and a Category, where a product can belong to one or more categories, and each category can contain multiple products.
 
-        \item[\textbf{User}] $(User)-[:PERFORM\_EVENT]->(History)$
+        \item[\textbf{STORED\_IN}] $(Product)-[:STORED\_IN]->(DistributionCenter)$
+
+        Relationship between a Product and a DistributionCenter, where each distribution center stores at least one product and each product can be stored in at least one distribution center.
+
+        \item[\textbf{PLACES}] $(User)-[:PLACES]->(Order)$
+        
+        Relationship between a User and an Order, where a user can place multiple orders (and can also place 0 orders), and each order is linked to exactly one user.
+        
+        \item[\textbf{ORDERED}] $(User)-[:PLACES]->(OrderItem)$
+        
+        Relationship between a User and an OrderItem, where an user can order multiple (at least one) order items and each order items is ordered by exactly one user.
+
+        \item[\textbf{CONTAINS}] $(Order)-[:CONTAINS]->(Order\_Item)$
+        
+        Relationship between an Order and the Order\_Item, where an order can contain multiple items (at least one), and each order item is linked to exactly one order.
+        
+        \item[\textbf{REFERS\_TO}] $(Order\_Item)-[:REFERS\_TO]->(Product)$
+        
+        Relationship between a Order\_Item and the Product, where a product can appear in multiple order items (at least one), and each order item corresponds to a specific product.
+        
+        \item[\textbf{BELONGS\_TO}] $(InventoryItem)-[:BELONGS\_TO]->(Product)$
+        
+        Relationship between a Product and a InventoryItem, where an inventory item belongs to exactly one product and each prouct can be associated to multiple items (at least one).
+
+        \item[\textbf{SOLD\_IN}] $(InventoryItem)-[:SOLD\_IN]->(OrderItem)$
+
+        Relationship between an InventoryItem and a OrderItem, where the cardinality is 1 to 1.
+
+        \item[\textbf{PERFORM\_EVENT}] $(User)-[:PERFORM\_EVENT]->(History)$
 
         Relationship between a User and a History, where a user can have multiple historical records, and each historical record is linked to one user.
         
@@ -302,14 +296,74 @@ ON CREATE SET oi.order_id = row.order_id,
 ON MATCH SET oi.count = coalesce(oi.count, 0) + 1;
 \end{verbatim}
 
+After importing the dataset we established the relationships between the different entities. To perform this task we used the following queries:
+\begin{verbatim}
+  LOAD CSV WITH HEADERS FROM "file:///products.csv" AS row
+  WITH row WHERE row.id IS NOT NULL
+  MATCH (d:DistributionCenter {id: row.distribution_center_id}),
+        (p:Product {id: row.id})
+  MERGE (p)-[:STORED_IN]->(d);
+\end{verbatim}
+
+\begin{verbatim} 
+  LOAD CSV WITH HEADERS FROM "file:///order_items.csv" AS row
+  WITH row WHERE row.id IS NOT NULL
+  MATCH (o:Order {order_id: row.order_id}),
+        (oi:OrderItem {id: row.id})
+  MERGE (o)-[:CONTAINS]->(oi);
+\end{verbatim}
+
+\begin{verbatim}
+  LOAD CSV WITH HEADERS FROM "file:///order_items.csv" AS row
+  WITH row WHERE row.id IS NOT NULL
+  MATCH (oi:OrderItem {id: row.id}),
+        (p:Product {id: row.product_id})
+  MERGE (oi)-[:REFERS_TO]->(p);
+\end{verbatim}
+
+\begin{verbatim} 
+  LOAD CSV WITH HEADERS FROM "file:///orders.csv" AS row
+  WITH row WHERE row.order_id IS NOT NULL
+  MATCH (u:User {id: row.user_id}),
+        (o:Order {order_id: row.order_id})
+  MERGE (u)-[:PLACES]->(o);
+\end{verbatim}
+
+\begin{verbatim}
+  LOAD CSV WITH HEADERS FROM "file:///order_items.csv" AS row
+  WITH row WHERE row.id IS NOT NULL
+  MATCH (u:User {id: row.user_id}),
+        (oi:OrderItem {id: row.id})
+  MERGE (u)-[:ORDERED]->(oi);
+\end{verbatim}
+
+
+\begin{verbatim}
+  LOAD CSV WITH HEADERS FROM "file:///inventory_items.csv" AS row
+  WITH row WHERE row.id IS NOT NULL
+  MATCH (i:InventoryItem {id: row.id}),
+        (p:Product {id: row.product_id})
+  MERGE (i)-[:BELONGS_TO]->(p);
+\end{verbatim}
+
+\begin{verbatim}
+  LOAD CSV WITH HEADERS FROM "file:///inventory_items.csv" AS row
+  WITH row WHERE row.id IS NOT NULL
+  MATCH (i:InventoryItem {id: row.id}),
+        (oi:OrderItem {id: row.id})
+  MERGE (i)-[:SOLD_IN]->(oi);
+\end{verbatim}
+
 \newpage
 \section{Cypher Queries}
 In order to provide the Marketing and Logistics departments with the necessary insights, we have developed a series of Cypher queries that address various aspects of the business operations.
+
 \subsection{Market Analysis for Marketing Department:}
 This section of the Cypher Queries aims at providing the Marketing department with insights on the share within the market by providing the number of orders in the Countries in which the Company operates.
 In particular, this is done by providing an overview on the total orders per country, the revenue per country, a demographic overview per country and an analysis of the most present brands within a specific 
 category, which in this study was chosen as the category with the most orders for further relevance.
 In particular, a very useful instrument for the Marketing department is the segmentation of the user base, which allows to divide the users into different categories based on their frequency and spending habits.
+
 \subsubsection{Total orders by Country}
 This queries the database to determine the total number of orders placed by users in each country, providing insights into the distribution of orders across different regions.
 \begin{verbatim}
@@ -913,20 +967,39 @@ This query retrieves the status of the most recent order placed by a specific us
   \end{tabular}
 \end{table}
 
-\subsubsection{Cross-Sell Opportunity}
-This query identifies the top 10 pairs of products that are frequently purchased together in the same order. This information can be used by the logistics department to optimize the packaging and delivery process by grouping frequently purchased items together.
+\subsection{Products that are going to be out of stock}
+This query returns the number of items in stock per product ID, in order to allow the Logistics Department to restock the products that have less than 5 items.
 \begin{verbatim}
-  MATCH (oi1:OrderItem)-[:REFERS_TO]->(p1:Product),
-      (oi2:OrderItem)-[:REFERS_TO]->(p2:Product)
-  WHERE oi1.order_id = oi2.order_id AND p1.id < p2.id  
-  WITH p1.id AS product1_id, p2.id AS product2_id, oi1.order_id AS order_id
-  WITH product1_id, product2_id, COUNT(DISTINCT order_id) AS frequency
-  RETURN product1_id, product2_id, frequency
-  ORDER BY frequency DESC
+  MATCH (i:InventoryItem)
+  WHERE i.sold_at IS NULL
+  WITH i.product_id AS ProductID, COUNT(i) AS UnsoldCount
+  WHERE UnsoldCount < 5
+  RETURN ProductID, UnsoldCount
+  ORDER BY UnsoldCount
   LIMIT 10;
 \end{verbatim}
+\begin{table}[h!]
+  \centering
+  \caption{Data for Processing Task}
+  \label{tab:processing_data}
+  \begin{tabular}{l l}
+      \toprule
+      \textbf{ProductID} & \textbf{UnsoldCount} \\
+      \midrule
+      "28403" &	1 \\
+      "13861" & 1 \\
+      "14055" & 1 \\
+      "14041" & 1 \\
+      "13668" & 1 \\
+      "28689" & 1 \\
+      "13800" & 1 \\
+      "14088" & 1 \\
+      "13825" & 1 \\
+      "13723" & 1 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
 
-!!!! TODO: ADD TABLE WITH RESULTS
 
 \subsubsection{Average Shipping Time by Country}
 This query computes the average shipping time for each country.
